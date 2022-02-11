@@ -1,5 +1,15 @@
 PlantGame/Library/
 PlantGame/Logs/
+PlantGame/Obj/
 PlantGame/Packages/
 PlantGame/Temp/
+PlantGame/UnityGenerated/
 PlantGame/UserSettings/
+
+PlantGame/Assets/AssetStoreTools*
+PlantGame/MemoryCaptures/
+PlantGame/Recordings/
+PlantGame/.vs/
+
+PlantGame/Assets/StreamingAssets/aa.meta
+PlantGame/Assets/StreamingAssets/aa/*
