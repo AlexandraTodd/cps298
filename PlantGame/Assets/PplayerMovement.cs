@@ -9,7 +9,7 @@ public class PplayerMovement : MonoBehaviour
     public float speed = 0.75f;
     public Animator animator;
     public BoxCollider2D collider;
-    public LayerMask
+    public LayerMask collisionMask;
 
     // Start is called before the first frame update
     void Start()
