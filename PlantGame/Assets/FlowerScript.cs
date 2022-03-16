@@ -17,7 +17,7 @@ public class FlowerScript : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1"))
         {
-            flowerColor = (flowerColor + 1) % 12;
+            flowerColor = (flowerColor + 1) % 6;
             Debug.Log(flowerColor);
         }
         if (Input.GetButtonDown("Fire2"))

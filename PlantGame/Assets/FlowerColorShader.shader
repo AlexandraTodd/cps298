@@ -73,51 +73,51 @@ Shader "Unlit/NewUnlitShader"
 						col.g = col.g * 1.0;
 						col.b = col.b * 0.0;
 						break;
-					case 3:
+					/*case 3:
 						col.r = col.r * 0.5;
 						col.g = col.g * 1.0;
 						col.b = col.b * 0.0;
+						break;*/
+					case 3:
+						col.r = col.r * 0.0;
+						col.g = col.g * 1.0;
+						col.b = col.b * 0.0;
 						break;
+					//case 5:
+					//	col.r = col.r * 0.0;
+					//	col.g = col.g * 1.0;
+					//	col.b = col.b * 0.5;
+					//	break;
 					case 4:
 						col.r = col.r * 0.0;
 						col.g = col.g * 1.0;
-						col.b = col.b * 0.0;
+						col.b = col.b * 1.0;
 						break;
+					//case 7:
+					//	col.r = col.r * 0.0;
+					//	col.g = col.g * 0.5;
+					//	col.b = col.b * 1.0;
+					//	break;
+					/*case 4:
+						col.r = col.r * 0.0;
+						col.g = col.g * 0.0;
+						col.b = col.b * 1.0;
+						break;*/
+					//case 9:
+					//	col.r = col.r * 0.5;
+					//	col.g = col.g * 0.0;
+					//	col.b = col.b * 1.0;
+					//	break;
 					case 5:
-						col.r = col.r * 0.0;
-						col.g = col.g * 1.0;
-						col.b = col.b * 0.5;
-						break;
-					case 6:
-						col.r = col.r * 0.0;
-						col.g = col.g * 1.0;
-						col.b = col.b * 1.0;
-						break;
-					case 7:
-						col.r = col.r * 0.0;
-						col.g = col.g * 0.5;
-						col.b = col.b * 1.0;
-						break;
-					case 8:
-						col.r = col.r * 0.0;
-						col.g = col.g * 0.0;
-						col.b = col.b * 1.0;
-						break;
-					case 9:
-						col.r = col.r * 0.5;
-						col.g = col.g * 0.0;
-						col.b = col.b * 1.0;
-						break;
-					case 10:
 						col.r = col.r * 1.0;
 						col.g = col.g * 0.0;
 						col.b = col.b * 1.0;
 						break;
-					case 11:
-						col.r = col.r * 1.0;
-						col.g = col.g * 0.0;
-						col.b = col.b * 0.5;
-						break;
+					//case 11:
+					//	col.r = col.r * 1.0;
+					//	col.g = col.g * 0.0;
+					//	col.b = col.b * 0.5;
+					//	break;
 					default:
 						col.r = col.r * 1.0;
 						col.g = col.g * 1.0;
