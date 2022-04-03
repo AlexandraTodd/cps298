@@ -24,7 +24,7 @@ public class PplayerMovement : MonoBehaviour
         direction.y = Input.GetAxisRaw("Vertical");
         direction.Normalize();
 
-        Debug.Log(direction);
+        //Debug.Log(direction);
 
 
         animator.SetFloat("Horizontal", direction.x);
