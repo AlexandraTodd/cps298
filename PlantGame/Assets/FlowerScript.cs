@@ -18,12 +18,12 @@ public class FlowerScript : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             flowerColor = (flowerColor + 1) % 12;
-            Debug.Log(flowerColor);
+            //Debug.Log(flowerColor);
         }
         if (Input.GetButtonDown("Fire2"))
         {
             flowerIntensity = (flowerIntensity + 1) % 3;
-            Debug.Log(flowerIntensity);
+            //Debug.Log(flowerIntensity);
         }
 
         myMaterial.SetInt("inputColor", flowerColor);

@@ -158,6 +158,9 @@ MonoBehaviour:
   speed: 1.5
   animator: {fileID: 263954643}
   collider: {fileID: 263954644}
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!212 &263954641
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -397,6 +400,7 @@ GameObject:
   - component: {fileID: 907273735}
   - component: {fileID: 907273737}
   - component: {fileID: 907273736}
+  - component: {fileID: 907273738}
   m_Layer: 0
   m_Name: Tilemap
   m_TagString: Untagged
@@ -2500,6 +2504,18 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &907273738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907273734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 941dff210429876e082aaa500acf07cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1907409830
 GameObject:
   m_ObjectHideFlags: 0
