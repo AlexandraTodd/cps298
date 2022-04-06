@@ -8,8 +8,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 direction; // (2, 3)
     public float speed = 0.75f;
     public Animator animator;
-    public BoxCollider2D collider;
-    public LayerMask collisionMask;
 
     // Start is called before the first frame update
     void Start()
