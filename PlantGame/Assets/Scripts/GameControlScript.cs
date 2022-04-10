@@ -7,9 +7,9 @@ using UnityEngine.SceneManagement;
 public class GameControlScript : MonoBehaviour {
 
 	public Text moneyText;
-//	public Text seedsText;
+	public Text seedsText;
 	public static int moneyAmount;
-//	public static int seedsAmount;
+	public static int seedsAmount;
 	//int isRifleSold;
 	//int isSeedsSold;
 	//public GameObject rifle;
@@ -18,7 +18,7 @@ public class GameControlScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		moneyAmount = PlayerPrefs.GetInt ("MoneyAmount");
-//		seedsAmount = PlayerPrefs.GetInt("SeedsAmount");
+		seedsAmount = PlayerPrefs.GetInt("SeedsAmount");
 		/*isRifleSold = PlayerPrefs.GetInt ("IsRifleSold");
 		
 		if (isRifleSold == 1)
@@ -40,13 +40,13 @@ public class GameControlScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		moneyText.text = "Money: " + moneyAmount.ToString() + "$";
-//		seedsText.text = "Seeds: " + seedsAmount.ToString() + "$";
+		seedsText.text = "Seeds: " + seedsAmount.ToString();
 	}
 
 	public void gotoShop()
 	{
 		PlayerPrefs.SetInt ("MoneyAmount", moneyAmount);
-//		PlayerPrefs.SetInt("SeedsAmount", moneyAmount);
+		PlayerPrefs.SetInt("SeedsAmount", seedsAmount);
 		SceneManager.LoadScene ("ShopScene");
 	}
 }
