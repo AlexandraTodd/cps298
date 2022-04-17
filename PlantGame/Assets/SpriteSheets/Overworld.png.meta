@@ -1099,7 +1099,7 @@ TextureImporter:
     second: Overworld_364
   - first:
       213: -1661911375500938401
-    second: Overworld_365
+    second: Fountain1
   - first:
       213: 912284458173254512
     second: Overworld_366
@@ -1108,7 +1108,7 @@ TextureImporter:
     second: Overworld_367
   - first:
       213: 7872500642094281346
-    second: Overworld_368
+    second: Fountain2
   - first:
       213: 8526427973969523166
     second: Overworld_369
@@ -1123,7 +1123,7 @@ TextureImporter:
     second: Overworld_372
   - first:
       213: 3767041631652516261
-    second: Overworld_373
+    second: Fountain3
   - first:
       213: 6740032504777296395
     second: Overworld_374
@@ -10990,13 +10990,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Overworld_365
+      name: Fountain1
       rect:
         serializedVersion: 2
         x: 352
-        y: 416
-        width: 16
-        height: 16
+        y: 384
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -11053,13 +11053,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Overworld_368
+      name: Fountain2
       rect:
         serializedVersion: 2
         x: 400
-        y: 416
-        width: 16
-        height: 16
+        y: 384
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -11158,13 +11158,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Overworld_373
+      name: Fountain3
       rect:
         serializedVersion: 2
-        x: 480
-        y: 416
-        width: 16
-        height: 16
+        x: 448
+        y: 384
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -25866,7 +25866,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

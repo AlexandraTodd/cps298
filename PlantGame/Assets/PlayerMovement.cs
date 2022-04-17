@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public Animator animator;
     public BoxCollider2D collider;
     public LayerMask collisionMask;
+    private RaycastHit2D hit;
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +30,8 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetFloat("Horizontal", direction.x);
         animator.SetFloat("Vertical", direction.y);
-        if (direction.x != 0 || direction.y != 0){
+        if (direction.x != 0 || direction.y != 0)
+        {
             animator.SetFloat("Speed", 1);
         }
         else
@@ -40,7 +42,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.Translate(direction * Time.deltaTime * speed);
+        hit = Physics2D.BoxCast(transform.position, collider.size, 0, new Vector2(0, direction.y), Mathf.Abs(direction.y * Time.deltaTime * speed), LayerMask.GetMask("Collision"));
+        if (hit.collider == null)
+        { 
+           transform.Translate(0, direction.y * Time.deltaTime * speed, 0);
+        }
+        hit = Physics2D.BoxCast(transform.position, collider.size, 0, new Vector2(direction.x, 0), Mathf.Abs(direction.x * Time.deltaTime * speed), LayerMask.GetMask("Collision"));
+        if (hit.collider == null)
+        {
+            transform.Translate(direction.x * Time.deltaTime * speed,0, 0);
+        }
     }
 
 }
