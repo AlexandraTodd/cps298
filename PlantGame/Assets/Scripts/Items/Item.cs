@@ -7,13 +7,21 @@ public class Item : ScriptableObject
     public Sprite icon = null;  // seed or flower
     public int Color = 0;
     public int Intensity = 1;
+    public int price = 1;
     public bool showInInventory = true;
-    // Gene ga;
-    // Gene gb;
+    // genes ?
 
     public virtual void Use ()
     {
         Debug.Log("Using " + name);
+    }
+
+    public void Sell ()
+    {
+        Debug.Log("Selling " + name);
+        // add price to currency
+        //money.gain(price);
+        RemoveFromInventory();
     }
 
     public void RemoveFromInventory ()
@@ -26,15 +34,27 @@ public class Item : ScriptableObject
         switch (colorInt)
         {
             case 1:
-                return "Orange";
+                return "Red-Orange";
             case 2:
-                return "Yellow";
+                return "Orange";
             case 3:
-                return "Green";
+                return "Yellow-Orange";
             case 4:
-                return "Blue";
+                return "Yellow";
             case 5:
+                return "Yellow-Green";
+            case 6:
+                return "Green";
+            case 7:
+                return "Blue-Green";
+            case 8:
+                return "Blue";
+            case 9:
+                return "Blue-Purple";
+            case 10:
                 return "Purple";
+            case 11:
+                return "Red-Purple";
             default:
                 return "Red";
         }
@@ -45,9 +65,9 @@ public class Item : ScriptableObject
         switch(intensityInt)
         {
             case 0:
-                return "Light";
+                return "Pastel";
             case 2:
-                return "Dark";
+                return "Vivid";
             default:
                 return "Bright";
 

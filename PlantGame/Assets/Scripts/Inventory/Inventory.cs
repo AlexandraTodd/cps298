@@ -23,7 +23,7 @@ public class Inventory : MonoBehaviour
     public int space = 36;
 
     public List<Item> items = new List<Item>();
-
+    public Currency money;
     public bool add(Item item)
     {
         if(items.Count >= space)

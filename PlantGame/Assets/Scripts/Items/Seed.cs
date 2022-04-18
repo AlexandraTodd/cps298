@@ -4,6 +4,7 @@ public class Seed : Item
 {
     new public string name = "Seed";  // add color ?
     public new Sprite icon = Resources.Load("seed", typeof(Sprite)) as Sprite;  // color shader ?
+    // growth time ?
 
     Seed(int colorSet, int intensitySet)
     {
