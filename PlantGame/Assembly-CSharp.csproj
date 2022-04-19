@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Items\Seed.cs" />
+    <Compile Include="Assets\Scripts\World\WorldBorder.cs" />
     <Compile Include="Assets\Scripts\World\FlowerRow.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventoryUI.cs" />
     <Compile Include="Assets\Scripts\World\TilePlacement.cs" />

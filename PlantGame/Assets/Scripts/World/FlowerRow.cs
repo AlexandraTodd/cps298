@@ -17,13 +17,46 @@ public class FlowerRow : MonoBehaviour {
 
         string path = Application.persistentDataPath + "/roots" + slotNumber + ".dat";
         if (File.Exists(path)) {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            if (stream.Length != 0) {
+                RootMinigameSave data = (RootMinigameSave)(formatter.Deserialize(stream));
 
+                // Reconstruct float coordinates into vector2s for linerenderers to read
+                int[] pointsPerRoot = data.pointsPerLine;
+                Vector3[] coordinates = new Vector3[data.xCoordinates.Length];
+                bool[] hasFlower = data.hasFlower;
+                for (int i = 0; i < coordinates.Length; i++) {
+                    coordinates[i] = new Vector3(data.xCoordinates[i], data.yCoordinates[i], 0f);
+                }
+
+                // There's probably a much more efficient way of doing this? I'm tired lol
+                // Grabs the first point of each point per root in the coordinate list
+                int runningIndex = 0;
+                for (int r = 0; r < pointsPerRoot.Length; r++) {
+                    for (int p = 0; p < pointsPerRoot[r]; p++) {
+                        if (p == 0) {
+                            Debug.Log("r: " + r + ", p: " + p+", hasFlower:"+ hasFlower[r]);
+                            if (hasFlower[r]) {
+                                GameObject newOverworldFlower = Instantiate(flowerTestPrefab, transform);
+
+                                // Extrapolate a location based on the x coordinate
+                                // In the minigame, this ranges from -46 to 46
+                                // In the overworld, this ranges from -0.23 to 0.23
+                                newOverworldFlower.transform.localPosition = new Vector3((coordinates[runningIndex].x) * 0.005f, 0f, 0f);
+                            }
+                        }
+                        runningIndex++;
+                    }
+                }
+            }
         }
     }
 
     void Update() {
+        // Causes the highlight selector graphic to flash red so players have an easier time seeing it
         if (highlightSprite.enabled) {
-            flashingAnimation += Time.deltaTime * 2f;
+            flashingAnimation += Time.deltaTime * 4f;
             Color flashingColor = highlightSprite.color;
             flashingColor.g = Mathf.Abs(Mathf.Sin(flashingAnimation));
             flashingColor.b = Mathf.Abs(Mathf.Sin(flashingAnimation));

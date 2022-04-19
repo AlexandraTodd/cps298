@@ -111,7 +111,10 @@ public class ActiveRoot : MonoBehaviour {
         }
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water")) {
-            EndRoot(true);
+            if (nutrientCount > 0)
+                EndRoot(true);
+            else
+                EndRoot(false);
         }
     }
 
@@ -129,6 +132,7 @@ public class ActiveRoot : MonoBehaviour {
         plantedRootDetail.stem.startColor = stem.startColor;
         plantedRootDetail.stem.endColor = stem.endColor;
         plantedRootDetail.stem.endWidth = stem.endWidth;
+        plantedRootDetail.hasFlower = successfulPlant;
 
         if (!successfulPlant) {
             plantedRootDetail.stem.startColor = Color.red;

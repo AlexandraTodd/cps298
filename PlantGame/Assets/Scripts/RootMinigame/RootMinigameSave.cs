@@ -15,9 +15,10 @@ public class RootMinigameSave {
     public int[] endingColor;
     public float[] endWidth;
     public bool[] nutrientsEnabled;
+    public bool[] hasFlower;
 
     public RootMinigameSave(Vector3[] pointsInput, int[] pointsPerLineInput, int generationSeedInput, int[] startingColorInput, int[] endingColorInput,
-        float[] endWidthInput, bool[] nutrientsEnabledInput) {
+        float[] endWidthInput, bool[] nutrientsEnabledInput, bool[] hasFlowerInput) {
         pointsPerLine = pointsPerLineInput;
 
         xCoordinates = new float[pointsInput.Length];
@@ -34,5 +35,6 @@ public class RootMinigameSave {
         endingColor = endingColorInput;
         endWidth = endWidthInput;
         nutrientsEnabled = nutrientsEnabledInput;
+        hasFlower = hasFlowerInput;
     }
 }
