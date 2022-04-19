@@ -13,19 +13,3 @@ PlantGame/.vs/
 
 PlantGame/Assets/StreamingAssets/aa.meta
 PlantGame/Assets/StreamingAssets/aa/*
-
-*/Library/
-*/Logs/
-*/Obj/
-*/Packages/
-*/Temp/
-*/UnityGenerated/
-*/UserSettings/
-
-*/Assets/AssetStoreTools*
-*/MemoryCaptures/
-*/Recordings/
-*/.vs/
-
-*/Assets/StreamingAssets/aa.meta
-*/Assets/StreamingAssets/aa/*

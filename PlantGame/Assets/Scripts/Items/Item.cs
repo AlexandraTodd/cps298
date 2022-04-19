@@ -1,12 +1,11 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
+//[CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
 public class Item : ScriptableObject
 {
     new public string name = "New Item";
     public Sprite icon = null;  // seed or flower
-    public int Color = 0;
-    public int Intensity = 1;
+    public int color = 0;
     public int price = 1;
     public bool showInInventory = true;
     // genes ?
@@ -67,9 +66,9 @@ public class Item : ScriptableObject
             case 0:
                 return "Pastel";
             case 2:
-                return "Vivid";
-            default:
                 return "Bright";
+            default:
+                return "Dark";
 
         }
     }

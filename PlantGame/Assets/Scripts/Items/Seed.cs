@@ -1,17 +1,28 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "New Seed", menuName = "Inventory/Seed")]
 public class Seed : Item
 {
-    new public string name = "Seed";  // add color ?
-    public new Sprite icon = Resources.Load("seed", typeof(Sprite)) as Sprite;  // color shader ?
     // growth time ?
 
-    Seed(int colorSet, int intensitySet)
+    //public static GenerateItem CreateInstance(ing colorSet)
+    //{
+    //    // You don't need "ScriptableObject." since this class inherits from it
+    //    GenerateItem o = CreateInstance<GenerateItem>();
+
+    //    o.name = colorToString(colorSet) + " Seed";
+    //    o.icon = Resources.Load("seed", typeof(Sprite)) as Sprite;  // color shader
+    //    o.color = colorSet;
+
+    //    return o;
+    //}
+
+    public Seed(int colorSet)
     {
-        name = intensityToString(intensitySet) + " " + colorToString(colorSet) + " Seed";
+        name = colorToString(colorSet) + " Seed";
         icon = Resources.Load("seed", typeof(Sprite)) as Sprite;  // color shader 
-        Color = colorSet;
-        Intensity = intensitySet;
+        color = colorSet;
+        //Debug.Log("name: " + name " color: " + color); //why doesn't this work
     }
 
     public override void Use()

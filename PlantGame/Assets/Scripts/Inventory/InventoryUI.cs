@@ -2,27 +2,35 @@ using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
+    public static InventoryUI Instance;
     public Transform ItemsParent;
     public GameObject inventoryUI;
     Inventory inventory;
     InventorySlot[] slots;
+    public GameObject inventorySlotPrefab;
+    public Sprite flowerIcon;
+    public Sprite seedIcon;
 
     void Start()
     {
         inventory = Inventory.instance;
         inventory.onItemChangedCallback += UpdateUI;
         slots = ItemsParent.GetComponentsInChildren<InventorySlot>();
-
-
+        inventoryUI.SetActive(true);    // testing
         UpdateUI();
+    }
+
+    void Awake()
+    {
+        Instance = this;
     }
 
     void Update()
     {
-        if(Input.GetButtonDown("Inventory"))
-        {
-            inventoryUI.SetActive(!inventoryUI.activeSelf);
-        }
+        //if(Input.GetButtonDown("Inventory"))
+        //{
+        //    inventoryUI.SetActive(!inventoryUI.activeSelf);
+        //}
     }
 
     void UpdateUI()
@@ -31,7 +39,7 @@ public class InventoryUI : MonoBehaviour
         {
             if (i < inventory.items.Count)
             {
-                slots[i].AddItem(inventory.items[i]);
+                slots[i].AddSlot(inventory.items[i]);  // edited
             }
             else
             {

@@ -8,40 +8,107 @@ public class Inventory : MonoBehaviour
     public static Inventory instance;
     private void Awake()
     {
-        if(instance != null)
+        if (instance != null)
         {
             Debug.LogWarning("More than one instance of Inventory found!");
             return;
         }
         instance = this;
+        itemDictionary = new Dictionary<Item, InventorySlot>();
+        items = new List<InventorySlot>();
     }
     #endregion
 
+    private void Start()
+    {
+        //Flower test = Flower.CreateInstance(4, 1);
+        //Add(test);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            Flower test = Flower.CreateInstance(4, 1);
+            Add(test);
+        }
+    }
+
+    public InventorySlot Get(Item itemData)
+    {
+        if (itemDictionary.TryGetValue(itemData, out InventorySlot value))
+        {
+            return value;
+        }
+        return null;
+    }
+
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;  // Trigger
+    private Dictionary<Item, InventorySlot> itemDictionary;   // testing
+    public List<InventorySlot> items { get; private set; }
+    //public Currency money;   // testing
 
-    public int space = 36;
+    //private void Awake()   // testing
+    //{
+    //    slots = new List<InventorySlot>();
+    //    itemDictionary = new Dictionary<Item, InventorySlot>();
+    //}
 
-    public List<Item> items = new List<Item>();
-    public Currency money;
-    public bool add(Item item)
+    public void Add(Flower itemData)   // there has got to be a way for this to be item
     {
-        if(items.Count >= space)
+        if (itemDictionary.TryGetValue(itemData, out InventorySlot value))
         {
-            Debug.Log("Not enough room.");  // this should never happen
-            return false;
+            value.AddToStack();
         }
-        items.Add(item);
+        else
+        {
+            GameObject newInstance = Instantiate(InventoryUI.Instance.inventorySlotPrefab);
+            InventorySlot newSlot = newInstance.AddComponent<InventorySlot>();
+            newSlot.AddItem(itemData);
+            items.Add(newSlot);
+            itemDictionary.Add(itemData, newSlot);
+        }
         if (onItemChangedCallback != null)
         {
             onItemChangedCallback.Invoke();
         }
-        return true;
+    }
+    public void Add(Seed itemData)
+    {
+        if (itemDictionary.TryGetValue(itemData, out InventorySlot value))
+        {
+            value.AddToStack();
+        }
+        else
+        {
+            GameObject newInstance = Instantiate(InventoryUI.Instance.inventorySlotPrefab);
+            InventorySlot newSlot = newInstance.AddComponent<InventorySlot>();
+            newSlot.AddItem(itemData);
+            items.Add(newSlot);
+            itemDictionary.Add(itemData, newSlot);
+        }
+        if (onItemChangedCallback != null)
+        {
+            onItemChangedCallback.Invoke();
+        }
     }
 
-    public void Remove(Item item)
+    public void Remove(Item itemData)
     {
-        items.Remove(item);
+        if (itemDictionary.TryGetValue(itemData, out InventorySlot value))
+        {
+            value.RemoveFromStack();
+            if (value.stackSize == 0)
+            {
+                value.ClearSlot();
+                itemDictionary.Remove(itemData);
+            }
+        }
+        else
+        {
+            Debug.Log("No " + itemData.name + " to remove.");
+        }
         if (onItemChangedCallback != null)
         {
             onItemChangedCallback.Invoke();
