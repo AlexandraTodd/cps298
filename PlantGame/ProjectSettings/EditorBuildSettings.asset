@@ -5,8 +5,14 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/TownMap.unity
+    guid: 68e2ba14f638f8f44b8bd13ae2327b9f
+  - enabled: 1
+    path: Assets/Scenes/RootMinigame.unity
+    guid: 16ff8e6b424db96448ea86c6c166e523
   m_configObjects:
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 60c1209d3bf4f964f920da11a3ad3768, type: 2}
