@@ -14,16 +14,16 @@ public class Inventory : MonoBehaviour
             return;
         }
         instance = this;
-        itemDictionary = new Dictionary<Item, InventorySlot>();
+        itemDictionary = new Dictionary<string, InventorySlot>();
         items = new List<InventorySlot>();
     }
     #endregion
 
-    private void Start()
-    {
-        //Flower test = Flower.CreateInstance(4, 1);
-        //Add(test);
-    }
+    //private void Start()
+    //{
+    //    Flower test = Flower.CreateInstance(4, 1);
+    //    Add(test);
+    //}
 
     void Update()
     {
@@ -36,7 +36,7 @@ public class Inventory : MonoBehaviour
 
     public InventorySlot Get(Item itemData)
     {
-        if (itemDictionary.TryGetValue(itemData, out InventorySlot value))
+        if (itemDictionary.TryGetValue(itemData.name, out InventorySlot value))
         {
             return value;
         }
@@ -45,48 +45,25 @@ public class Inventory : MonoBehaviour
 
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;  // Trigger
-    private Dictionary<Item, InventorySlot> itemDictionary;   // testing
+    private Dictionary<string, InventorySlot> itemDictionary;   // testing
     public List<InventorySlot> items { get; private set; }
     //public Currency money;   // testing
 
-    //private void Awake()   // testing
-    //{
-    //    slots = new List<InventorySlot>();
-    //    itemDictionary = new Dictionary<Item, InventorySlot>();
-    //}
-
-    public void Add(Flower itemData)   // there has got to be a way for this to be item
+    public void Add(Item itemData)   // there has got to be a way for this to be item
     {
-        if (itemDictionary.TryGetValue(itemData, out InventorySlot value))
+        if (itemDictionary.TryGetValue(itemData.name, out InventorySlot value))
         {
             value.AddToStack();
         }
         else
         {
-            GameObject newInstance = Instantiate(InventoryUI.Instance.inventorySlotPrefab);
-            InventorySlot newSlot = newInstance.AddComponent<InventorySlot>();
-            newSlot.AddItem(itemData);
+            //GameObject newInstance = Instantiate(InventoryUI.Instance.inventorySlotPrefab);
+            //InventorySlot newSlot = newInstance.AddComponent<InventorySlot>();
+            //newSlot.AddItem(itemData);
+            InventorySlot newSlot = new InventorySlot(itemData);
+            Debug.Log("Adding " + newSlot.item.name);
             items.Add(newSlot);
-            itemDictionary.Add(itemData, newSlot);
-        }
-        if (onItemChangedCallback != null)
-        {
-            onItemChangedCallback.Invoke();
-        }
-    }
-    public void Add(Seed itemData)
-    {
-        if (itemDictionary.TryGetValue(itemData, out InventorySlot value))
-        {
-            value.AddToStack();
-        }
-        else
-        {
-            GameObject newInstance = Instantiate(InventoryUI.Instance.inventorySlotPrefab);
-            InventorySlot newSlot = newInstance.AddComponent<InventorySlot>();
-            newSlot.AddItem(itemData);
-            items.Add(newSlot);
-            itemDictionary.Add(itemData, newSlot);
+            itemDictionary.Add(itemData.name, newSlot);
         }
         if (onItemChangedCallback != null)
         {
@@ -96,13 +73,13 @@ public class Inventory : MonoBehaviour
 
     public void Remove(Item itemData)
     {
-        if (itemDictionary.TryGetValue(itemData, out InventorySlot value))
+        if (itemDictionary.TryGetValue(itemData.name, out InventorySlot value))
         {
             value.RemoveFromStack();
-            if (value.stackSize == 0)
+            if (value.item.stackSize == 0)
             {
                 value.ClearSlot();
-                itemDictionary.Remove(itemData);
+                itemDictionary.Remove(itemData.name);
             }
         }
         else

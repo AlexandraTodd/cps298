@@ -4,11 +4,11 @@ using UnityEngine;
 public class Item : ScriptableObject
 {
     new public string name = "New Item";
-    public Sprite icon = null;  // seed or flower
+    public Sprite icon;  // seed or flower
     public int color = 0;
     public int price = 1;
     public bool showInInventory = true;
-    // genes ?
+    public int stackSize = 0;
 
     public virtual void Use ()
     {
@@ -19,7 +19,7 @@ public class Item : ScriptableObject
     {
         Debug.Log("Selling " + name);
         // add price to currency
-        //money.gain(price);
+        // money.gain(price);
         RemoveFromInventory();
     }
 
@@ -32,6 +32,8 @@ public class Item : ScriptableObject
     {
         switch (colorInt)
         {
+            case 0:
+                return "Red";
             case 1:
                 return "Red-Orange";
             case 2:
@@ -55,7 +57,7 @@ public class Item : ScriptableObject
             case 11:
                 return "Red-Purple";
             default:
-                return "Red";
+                return "Unknown Color";
         }
     }
 
@@ -65,11 +67,12 @@ public class Item : ScriptableObject
         {
             case 0:
                 return "Pastel";
-            case 2:
+            case 1:
                 return "Bright";
-            default:
+            case 2:
                 return "Dark";
-
+            default:
+                return "Unknown Intensity";
         }
     }
 }

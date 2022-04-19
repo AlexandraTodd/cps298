@@ -2323,7 +2323,7 @@ MonoBehaviour:
   ItemsParent: {fileID: 642791820}
   inventoryUI: {fileID: 107053960}
   inventorySlotPrefab: {fileID: 3784357396690084910, guid: 23975461a432c3446ac14d967289da0a, type: 3}
-  flowerIcon: {fileID: 21300000, guid: 540195bb7ee083c45b1b2aaecbbff7c8, type: 3}
+  flowerIcon: {fileID: 21300000, guid: 058baa77152500b45bb9e28cb5702ffa, type: 3}
   seedIcon: {fileID: 21300000, guid: 32083ad41a92c934483929b78559adc0, type: 3}
 --- !u!114 &955850433
 MonoBehaviour:

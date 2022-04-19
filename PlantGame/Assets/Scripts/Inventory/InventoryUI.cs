@@ -6,7 +6,7 @@ public class InventoryUI : MonoBehaviour
     public Transform ItemsParent;
     public GameObject inventoryUI;
     Inventory inventory;
-    InventorySlot[] slots;
+    public InventorySlot[] slots;
     public GameObject inventorySlotPrefab;
     public Sprite flowerIcon;
     public Sprite seedIcon;
@@ -39,7 +39,9 @@ public class InventoryUI : MonoBehaviour
         {
             if (i < inventory.items.Count)
             {
+                Debug.Log("inventory.items[i]" + inventory.items[i].item.name);
                 slots[i].AddSlot(inventory.items[i]);  // edited
+                Debug.Log("slots[i] " + slots[i].item.name);
             }
             else
             {
