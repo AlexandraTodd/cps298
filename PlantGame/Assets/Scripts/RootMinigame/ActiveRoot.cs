@@ -22,6 +22,7 @@ public class ActiveRoot : MonoBehaviour {
 
     [HideInInspector] public float strain = 0f;
     [HideInInspector] public int nutrientCount = 0;
+    [HideInInspector] public RootMinigameManager manager;
 
     private void Awake() {
         stem = GetComponent<LineRenderer>();
@@ -44,6 +45,8 @@ public class ActiveRoot : MonoBehaviour {
     }
 
     private void FixedUpdate() {
+        if (manager.paused) return;
+
         float angle = Mathf.Atan2(target.y - transform.position.y, target.x - transform.position.x) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, angle));
         if (lastRotation != targetRotation) {

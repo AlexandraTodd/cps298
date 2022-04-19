@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 direction; // (2, 3)
     public float speed = 0.75f;
     public Animator animator;
-    public BoxCollider2D collider;
+    new public BoxCollider2D collider;
     public LayerMask collisionMask;
     private RaycastHit2D hit;
 
