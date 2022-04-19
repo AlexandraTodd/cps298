@@ -12,6 +12,7 @@ public class Flower : Item
         data.color = colorSet;
         data.intensity = intensitySet;
         data.price = 3 + intensitySet;
+        data.itemType = 0;
         return data;
     }
 

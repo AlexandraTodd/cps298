@@ -9,6 +9,7 @@ public class Seed : Item
         data.name = data.colorToString(colorSet) + " Seed";
         data.color = colorSet;
         data.price = 1;
+        data.itemType = 1;
         return data;
     }
 

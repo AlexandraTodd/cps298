@@ -5,6 +5,7 @@ public class InventorySlot : MonoBehaviour
 {
     public Image Icon;
     public Item item;
+    public int stackSize;
 
     public InventorySlot(Item newItem)
     {
@@ -15,21 +16,23 @@ public class InventorySlot : MonoBehaviour
     {
         item = newSlot.item;
         Icon.enabled = true;
+        stackSize = newSlot.stackSize;
     }
 
     public void AddItem(Item newItem)
     {
         item = newItem;
+        stackSize = 1;
     }
 
     public void AddToStack()   // testing
     {
-        item.stackSize++;
+        stackSize++;
     }
 
     public void RemoveFromStack()   // testing
     {
-        item.stackSize--;
+        stackSize--;
     }
 
     public void ClearSlot ()

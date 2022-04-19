@@ -8,7 +8,7 @@ public class Item : ScriptableObject
     public int color = 0;
     public int price = 1;
     public bool showInInventory = true;
-    public int stackSize = 0;
+    public int itemType = 0;
 
     public virtual void Use ()
     {

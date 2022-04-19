@@ -1,28 +1,19 @@
 fileFormatVersion: 2
-guid: 62634ff1b3c36154c9994d87a33802e6
+guid: dc4ce0b0853219f48b44b1f3f926259b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 21300000
-    second: M_jars4_0
+      213: 3886734522649249252
+    second: Rural Village Old Tiles48 (No Longer Supported)_0
   - first:
-      213: 21300002
-    second: M_jars4_1
+      213: 149290971278808629
+    second: Rural Village Old Tiles48 (No Longer Supported)_1
   - first:
-      213: 21300004
-    second: M_jars4_2
+      213: 5669537162715191821
+    second: Rural Village Old Tiles48 (No Longer Supported)_2
   - first:
-      213: 21300006
-    second: M_jars4_3
-  - first:
-      213: 21300008
-    second: M_jars4_4
-  - first:
-      213: 21300010
-    second: M_jars4_5
-  - first:
-      213: 21300012
-    second: M_jars4_6
+      213: -3123975663555729245
+    second: Rural Village Old Tiles48 (No Longer Supported)_3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -67,7 +58,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 200
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -82,7 +73,7 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
+  applyGammaDecoding: 0
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -95,7 +86,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
@@ -107,7 +98,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Android
     maxTextureSize: 2048
@@ -119,18 +110,18 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: M_jars4_0
+      name: Rural Village Old Tiles48 (No Longer Supported)_0
       rect:
         serializedVersion: 2
-        x: 59
-        y: 603
-        width: 234
-        height: 353
+        x: 1074
+        y: 1061
+        width: 111
+        height: 91
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -138,20 +129,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5f9b445c9f6e6c3419760d1f85962a80
-      internalID: 21300000
+      spriteID: 4e581ce947470f530800000000000000
+      internalID: 3886734522649249252
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: M_jars4_1
+      name: Rural Village Old Tiles48 (No Longer Supported)_1
       rect:
         serializedVersion: 2
-        x: 548
-        y: 615
-        width: 200
-        height: 349
+        x: 927
+        y: 1062
+        width: 117
+        height: 90
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,20 +150,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8713f595e4caa764bb353df9fd7b71fd
-      internalID: 21300002
+      spriteID: 5361f3fe853621200800000000000000
+      internalID: 149290971278808629
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: M_jars4_2
+      name: Rural Village Old Tiles48 (No Longer Supported)_2
       rect:
         serializedVersion: 2
-        x: 1024
-        y: 616
-        width: 201
-        height: 348
+        x: 783
+        y: 1062
+        width: 116
+        height: 89
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -180,20 +171,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0b57c275390958142989025be4cc2011
-      internalID: 21300004
+      spriteID: d0ad380d20e3eae40800000000000000
+      internalID: 5669537162715191821
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: M_jars4_3
+      name: Rural Village Old Tiles48 (No Longer Supported)_3
       rect:
         serializedVersion: 2
-        x: 1011
-        y: 124
-        width: 225
-        height: 338
+        x: 1065
+        y: 819
+        width: 126
+        height: 102
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -201,50 +192,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: aa45944f966e1cd499c25290d5beb537
-      internalID: 21300006
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: M_jars4_5
-      rect:
-        serializedVersion: 2
-        x: 76
-        y: 124
-        width: 200
-        height: 332
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b5583ecbb563e5845aa0032c7e652caf
-      internalID: 21300010
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: M_jars4_6
-      rect:
-        serializedVersion: 2
-        x: 536
-        y: 108
-        width: 229
-        height: 346
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0d4efa4ba374af641a173337cc2585b2
-      internalID: 21300012
+      spriteID: 3a8abce7fa865a4d0800000000000000
+      internalID: -3123975663555729245
       vertices: []
       indices: 
       edges: []
@@ -252,7 +201,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: a4bf316c7a51fdd49b86f442c573a45c
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 

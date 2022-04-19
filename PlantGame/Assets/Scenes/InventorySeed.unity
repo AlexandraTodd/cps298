@@ -601,6 +601,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ItemsParent: {fileID: 1672104171}
   inventoryUI: {fileID: 1209916280}
+  slots: []
+  inventorySlotPrefab: {fileID: 0}
+  flowerIcon: {fileID: 0}
+  seedIcon: {fileID: 0}
 --- !u!114 &147020678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2654,8 +2658,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cab3510a9c5b5143a4d8af9dc1add8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  space: 36
-  items: []
 --- !u!4 &768085432
 Transform:
   m_ObjectHideFlags: 0
@@ -2987,7 +2989,7 @@ GameObject:
   - component: {fileID: 1209916282}
   - component: {fileID: 1209916281}
   m_Layer: 5
-  m_Name: Inventory
+  m_Name: SeedInventory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

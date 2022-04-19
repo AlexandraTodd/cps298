@@ -19,18 +19,16 @@ public class Inventory : MonoBehaviour
     }
     #endregion
 
-    //private void Start()
-    //{
-    //    Flower test = Flower.CreateInstance(4, 1);
-    //    Add(test);
-    //}
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.D))
         {
             Flower test = Flower.CreateInstance(4, 1);
             Add(test);
+            Flower test2 = Flower.CreateInstance(8, 2);
+            Add(test2);
+            Seed test3 = Seed.CreateInstance(10);
+            Add(test3);
         }
     }
 
@@ -49,11 +47,12 @@ public class Inventory : MonoBehaviour
     public List<InventorySlot> items { get; private set; }
     //public Currency money;   // testing
 
-    public void Add(Item itemData)   // there has got to be a way for this to be item
+    public void Add(Item itemData)
     {
         if (itemDictionary.TryGetValue(itemData.name, out InventorySlot value))
         {
             value.AddToStack();
+            Debug.Log(itemData.name + " stack size: " + value.stackSize);
         }
         else
         {
@@ -76,7 +75,7 @@ public class Inventory : MonoBehaviour
         if (itemDictionary.TryGetValue(itemData.name, out InventorySlot value))
         {
             value.RemoveFromStack();
-            if (value.item.stackSize == 0)
+            if (value.stackSize == 0)
             {
                 value.ClearSlot();
                 itemDictionary.Remove(itemData.name);
