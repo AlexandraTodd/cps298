@@ -2,15 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.SceneManagement;
 
 public class FlowerRow : MonoBehaviour {
     public SpriteRenderer highlightSprite;
     public int slotNumber;
+    public GameObject flowerTestPrefab;
     [HideInInspector] public float flashingAnimation = 0f;
 
     void Awake() {
         highlightSprite.enabled = false;
+
+        string path = Application.persistentDataPath + "/roots" + slotNumber + ".dat";
+        if (File.Exists(path)) {
+
+        }
     }
 
     void Update() {

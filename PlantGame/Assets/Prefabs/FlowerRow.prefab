@@ -128,6 +128,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightSprite: {fileID: 7103165515753935779}
+  slotNumber: 0
+  flowerTestPrefab: {fileID: 5026338990598809563, guid: ef9134056dca32e439ede86adb22c222, type: 3}
   flashingAnimation: 0
 --- !u!61 &1310846412331009204
 BoxCollider2D:
