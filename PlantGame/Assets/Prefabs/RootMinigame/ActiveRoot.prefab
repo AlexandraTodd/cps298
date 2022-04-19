@@ -314,6 +314,7 @@ MonoBehaviour:
   currentlyRotating: 0
   strain: 0
   nutrientCount: 0
+  manager: {fileID: 0}
 --- !u!50 &3715721581037499468
 Rigidbody2D:
   serializedVersion: 4
@@ -332,7 +333,7 @@ Rigidbody2D:
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 18d0ec4091f44f1469aa1cc2d6d4101d, type: 2}
   m_Interpolate: 1
-  m_SleepingMode: 1
+  m_SleepingMode: 2
   m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!58 &3715721581037499459

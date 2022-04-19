@@ -3,8 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
 public class Item : ScriptableObject
 {
-    new public string name = "New Item";
-    public Sprite icon = null;  // seed or flower
+    public string itemName = "New Item";
+    public Sprite itemIcon = null;  // seed or flower
     public int Color = 0;
     public int Intensity = 1;
     public bool showInInventory = true;
@@ -13,7 +13,7 @@ public class Item : ScriptableObject
 
     public virtual void Use ()
     {
-        Debug.Log("Using " + name);
+        Debug.Log("Using " + itemName);
     }
 
     public void RemoveFromInventory ()

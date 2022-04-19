@@ -25,11 +25,19 @@ public class RootMinigameManager : MonoBehaviour {
     [HideInInspector] public float delayBeforeReturnToDefaultView = 0f;
     [HideInInspector] public ActiveRoot activeRoot;
     public static int currentSlot = -1;
+    public bool paused = false;
 
     void Awake() {
         Application.targetFrameRate = -1;
         Instance = this;
         LoadPlantMinigameProgress();
+    }
+
+    private IEnumerator PauseWait() {
+        paused = true;
+        yield return new WaitForSeconds(1);
+        paused = false;
+        activeRoot.GetComponent<Rigidbody2D>().WakeUp();
     }
 
     void Update() {
@@ -54,7 +62,10 @@ public class RootMinigameManager : MonoBehaviour {
                         // Creates the root
                         GameObject newRoot = Instantiate(activeRootPrefab, new Vector2(spawnPointer.transform.position.x, 0f), Quaternion.Euler(new Vector3(0f, 0f, 270f)));
                         activeRoot = newRoot.GetComponent<ActiveRoot>();
+                        activeRoot.manager = this;
                         spawnPointer.SetActive(false);
+
+                        StartCoroutine(PauseWait());
                     }
                 }
             }
@@ -64,18 +75,20 @@ public class RootMinigameManager : MonoBehaviour {
             Vector3 activeRootPosition = activeRoot.transform.position;
             defaultCamera.transform.position = Vector3.Lerp(defaultCamera.transform.position, new Vector3(activeRootPosition.x, activeRootPosition.y, -10f), Time.deltaTime * 16f);
 
-            activeRoot.target = defaultCamera.ScreenToWorldPoint(Input.mousePosition);
+            if (!paused) {
+                activeRoot.target = defaultCamera.ScreenToWorldPoint(Input.mousePosition);
 
-            if (activeRoot.currentlyRotating) {
-                // Because we are changing angles, add an extra point to our linerenderer 10 times a second
-                // This would be for saving roots and minimizing linerender calculations for performance purposes
-                // The longer the timer, the more rigid the line appears but the healthier performance will be
-                activeRoot.generatePointTimer = Mathf.Max(0f, activeRoot.generatePointTimer - Time.deltaTime);
-                if (activeRoot.generatePointTimer == 0f) {
-                    activeRoot.stem.positionCount++;
-                    activeRoot.generatePointTimer = 0.1f;
-                }
-            } else activeRoot.generatePointTimer = 0f;
+                if (activeRoot.currentlyRotating) {
+                    // Because we are changing angles, add an extra point to our linerenderer 10 times a second
+                    // This would be for saving roots and minimizing linerender calculations for performance purposes
+                    // The longer the timer, the more rigid the line appears but the healthier performance will be
+                    activeRoot.generatePointTimer = Mathf.Max(0f, activeRoot.generatePointTimer - Time.deltaTime);
+                    if (activeRoot.generatePointTimer == 0f) {
+                        activeRoot.stem.positionCount++;
+                        activeRoot.generatePointTimer = 0.1f;
+                    }
+                } else activeRoot.generatePointTimer = 0f;
+            }
         }
 
         // Clear save
