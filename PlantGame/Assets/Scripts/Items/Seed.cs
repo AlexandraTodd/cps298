@@ -1,16 +1,16 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "New Seed", menuName = "Inventory/Seed")]
 public class Seed : Item
 {
-    public string seedName = "Seed";  // add color ?
-    public Sprite seedIcon = Resources.Load("seed", typeof(Sprite)) as Sprite;  // color shader ?
-
-    Seed(int colorSet, int intensitySet)
+    public static Seed CreateInstance(int colorSet)
     {
-        seedName = intensityToString(intensitySet) + " " + colorToString(colorSet) + " Seed";
-        seedIcon = Resources.Load("seed", typeof(Sprite)) as Sprite;  // color shader 
-        Color = colorSet;
-        Intensity = intensitySet;
+        Seed data = ScriptableObject.CreateInstance<Seed>();
+        data.name = data.colorToString(colorSet) + " Seed";
+        data.color = colorSet;
+        data.price = 1;
+        data.itemType = 1;
+        return data;
     }
 
     public override void Use()
