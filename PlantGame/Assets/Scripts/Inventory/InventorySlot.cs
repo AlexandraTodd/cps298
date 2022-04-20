@@ -6,6 +6,7 @@ public class InventorySlot : MonoBehaviour
     public Image Icon;
     public Item item;
     public int stackSize;
+    private string stackSizeString;
     public Text stackSizeText;
 
     // Note from Drake:
@@ -39,26 +40,29 @@ public class InventorySlot : MonoBehaviour
     public void Configure(Item itemData) {
         item = itemData;
         stackSize = 1;
-        stackSizeText.text = stackSize.ToString();
+        stackSizeString = stackSize.ToString();
     }
 
-    public void AddSlot(InventorySlot newSlot)  // edited
+    public void AddSlot(InventorySlot newSlot)
     {
         item = newSlot.item;
         Icon.enabled = true;
         stackSize = newSlot.stackSize;
-       // stackSizeText = newSlot.stackSizeText;
-       // stackSizeText.enabled = true;
+        stackSizeText.text = newSlot.stackSizeString;
     }
 
     public void AddToStack()   // testing
     {
         stackSize++;
+        stackSizeString = stackSize.ToString();
+        stackSizeText.text = stackSizeString;
     }
 
     public void RemoveFromStack()   // testing
     {
         stackSize--;
+        stackSizeString = stackSize.ToString();
+        stackSizeText.text = stackSizeString;
     }
 
     public void ClearSlot ()

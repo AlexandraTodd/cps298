@@ -67,6 +67,7 @@ public class Inventory : MonoBehaviour
 
             // Rather than creating a new class with the itemData as a parameter, we're going to Instantiate it in Unity and then call a method to update it
             // with the itemData as a parameter instead
+
             GameObject newSlotObject = Instantiate(inventorySlotPrefab, transform.position, Quaternion.identity);
             InventorySlot newInventorySlot = newSlotObject.GetComponent<InventorySlot>();
             newInventorySlot.Configure(itemData);
