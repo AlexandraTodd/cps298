@@ -3406,9 +3406,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6077ba10de04aba48ac0defeb3bb134e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ItemsParent: {fileID: 642791820}
-  inventoryUI: {fileID: 107053960}
-  slots: []
+  FlowerItemsParent: {fileID: 642791820}
+  SeedItemsParent: {fileID: 2076299377}
+  FlowerInventoryUI: {fileID: 107053960}
+  SeedInventoryUI: {fileID: 1350389493}
+  FlowerSlots: []
+  SeedSlots: []
 --- !u!114 &955850433
 MonoBehaviour:
   m_ObjectHideFlags: 0

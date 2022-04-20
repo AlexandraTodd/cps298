@@ -3,18 +3,22 @@ using UnityEngine;
 public class InventoryUI : MonoBehaviour
 {
     public static InventoryUI Instance;
-    public Transform ItemsParent;
-    public GameObject inventoryUI;
+    public Transform FlowerItemsParent;
+    public Transform SeedItemsParent;
+    public GameObject FlowerInventoryUI;
+    public GameObject SeedInventoryUI;
     Inventory inventory;
-    public InventorySlot[] slots;
+    public InventorySlot[] FlowerSlots;
+    public InventorySlot[] SeedSlots;
     //public GameObject inventorySlotPrefab;
 
     void Start()
     {
         inventory = Inventory.instance;
         inventory.onItemChangedCallback += UpdateUI;
-        slots = ItemsParent.GetComponentsInChildren<InventorySlot>();
-        inventoryUI.SetActive(true);    // testing
+        FlowerSlots = FlowerItemsParent.GetComponentsInChildren<InventorySlot>();
+        SeedSlots = SeedItemsParent.GetComponentsInChildren<InventorySlot>();
+        FlowerInventoryUI.SetActive(true);    // testing
         UpdateUI();
     }
 
@@ -25,17 +29,32 @@ public class InventoryUI : MonoBehaviour
 
     void UpdateUI()
     {
-        for (int i = 0; i < slots.Length; i++)
+        int flowers = 0;
+        int seeds = 0;
+        for (int i = 0;  i < inventory.items.Count; i++)
         {
-            if (i < inventory.items.Count)
+            if(inventory.items[i].item.itemType == 0)
             {
-                slots[i].AddSlot(inventory.items[i]);  // edited
+                FlowerSlots[flowers].AddSlot(inventory.items[i]);
+                flowers++;
             }
             else
             {
-                slots[i].ClearSlot();
+                SeedSlots[seeds].AddSlot(inventory.items[i]);
+                seeds++;
             }
         }
+
+        for (int i = flowers; i < FlowerSlots.Length; i++)
+        {
+            FlowerSlots[i].ClearSlot();
+        }
+
+        for (int i = seeds; i < SeedSlots.Length; i++)
+        {
+            SeedSlots[i].ClearSlot();
+        }
+
         Debug.Log("Updating UI");
     }
 }
