@@ -63,8 +63,6 @@
      <Compile Include="Assets\PlayerMovement.cs" />
      <Compile Include="Assets\Scripts\Items\Item.cs" />
      <Compile Include="Assets\Scripts\Items\Flower.cs" />
-     <Compile Include="Assets\Scripts\Inventory\TabGroup.cs" />
-     <Compile Include="Assets\Scripts\Inventory\TabButton.cs" />
      <Compile Include="Assets\PplayerMovement.cs" />
      <Compile Include="Assets\Scripts\RootMinigame\RootMinigameManager.cs" />
      <Compile Include="Assets\Scripts\RootMinigame\RootMinigameSave.cs" />
