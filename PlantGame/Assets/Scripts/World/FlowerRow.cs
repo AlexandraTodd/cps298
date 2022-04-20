@@ -64,11 +64,14 @@ public class FlowerRow : MonoBehaviour {
                 int[] pointsPerRoot = data.pointsPerLine;
                 Vector3[] coordinates = new Vector3[data.xCoordinates.Length];
                 int[] nutrientCount = data.nutrientCount;
+                int[] colorIndex = data.colorIndex;
                 for (int i = 0; i < coordinates.Length; i++) {
                     coordinates[i] = new Vector3(data.xCoordinates[i], data.yCoordinates[i], 0f);
                 }
 
-                // There's probably a much more efficient way of doing this? I'm tired lol
+                // Seeded randomization so its always consistent, if we decide to implement some variance
+                Random.InitState(slotNumber);
+
                 // Grabs the first point of each point per root in the coordinate list
                 int runningIndex = 0;
                 for (int r = 0; r < pointsPerRoot.Length; r++) {
@@ -82,10 +85,13 @@ public class FlowerRow : MonoBehaviour {
                                 // In the overworld, this ranges from -0.23 to 0.23
                                 newOverworldFlower.transform.localPosition = new Vector3((coordinates[runningIndex].x) * 0.005f, 0f, 0f);
 
-                                // As a test; white appears for 1 nutrient flowers, gray appears for 2 nutrient flowers, and black appears for 3 nutrient flowers
-                                float colorScale = 1f - (nutrientCount[r] / 3f);
-                                newOverworldFlower.GetComponent<SpriteRenderer>().color = new Color(colorScale, colorScale, colorScale, 1f);
-                                
+                                // Set flower color and intensity
+                                newOverworldFlower.GetComponent<OverworldFlower>().SetColorIntensity(colorIndex[r], nutrientCount[r] - 1);
+
+                                // Randomly flip flower sprite to make it look a bit less repetitive
+                                // Shader currently does not support two-sided so this just makes them invisible
+                                // if (Random.value >= 0.5f) newOverworldFlower.GetComponent<SpriteRenderer>().flipX = true;
+
                                 // Adds it to a list so we can clear it on command if we want to regenerate this (i.e. pick the flower on overworld)
                                 overworldFlowerObjects.Add(newOverworldFlower);
                             }

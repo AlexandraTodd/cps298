@@ -129,8 +129,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highlightSprite: {fileID: 7103165515753935779}
   slotNumber: 0
-  flowerTestPrefab: {fileID: 5026338990598809563, guid: ef9134056dca32e439ede86adb22c222, type: 3}
+  flowerTestPrefab: {fileID: 5026338990598809563, guid: 0292d9d7d68864e4da914bd3382709cf, type: 3}
   flashingAnimation: 0
+  overworldFlowerObjects: []
 --- !u!61 &1310846412331009204
 BoxCollider2D:
   m_ObjectHideFlags: 0

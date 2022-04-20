@@ -21,6 +21,7 @@ public class ActiveRoot : MonoBehaviour {
     [HideInInspector] public bool currentlyRotating;
 
     [HideInInspector] public float strain = 0f;
+    [HideInInspector] public int colorIndex = 0;
     [HideInInspector] public int nutrientCount = 0;
     [HideInInspector] public RootMinigameManager manager;
 
@@ -35,6 +36,8 @@ public class ActiveRoot : MonoBehaviour {
             if (currentPointer != pointer) pointer.enabled = false;
             else pointer.enabled = true;
         }
+
+        colorIndex = Random.Range(0, 12);
 
         UpdateColor(Color.green);
     }
@@ -129,6 +132,7 @@ public class ActiveRoot : MonoBehaviour {
         plantedRootDetail.stem.startColor = stem.startColor;
         plantedRootDetail.stem.endColor = stem.endColor;
         plantedRootDetail.stem.endWidth = stem.endWidth;
+        plantedRootDetail.colorIndex = colorIndex;
         plantedRootDetail.nutrientCount = nutrientCount;
 
         if (nutrientCount == 0) {
