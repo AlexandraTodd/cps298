@@ -5245,6 +5245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cab3510a9c5b5143a4d8af9dc1add8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inventorySlotPrefab: {fileID: 3784357396690084910, guid: 23975461a432c3446ac14d967289da0a, type: 3}
 --- !u!4 &1501263818
 Transform:
   m_ObjectHideFlags: 0

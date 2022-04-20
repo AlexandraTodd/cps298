@@ -8,6 +8,9 @@ public class InventorySlot : MonoBehaviour
     public int stackSize;
     public Text stackSizeText;
 
+    // Note from Drake:
+    // This does not get used. Instantiating Unity MonoBehaviour objects behave differently than creating instances of classes and use Awake()/Start() instead
+    /*
     public InventorySlot(Item newItem)
     {
         item = newItem;
@@ -23,8 +26,19 @@ public class InventorySlot : MonoBehaviour
         //InventoryUI.go.AddComponent<Text>();
         //stackSizeText = InventoryUI.go.GetComponent<Text>();
         //stackSizeText.text = stackSize.ToString();
-        GameObject go = new GameObject();
-        stackSizeText = go.GetComponent<Text>();
+
+        // Note from Drake: For Unity, GameObjects are created in-game using static method Instantiate rather than made a new class object
+        // GameObject go = new GameObject();
+
+        // GameObject go = Instantiate()
+        // stackSizeText = go.GetComponent<Text>();
+        stackSizeText.text = stackSize.ToString();
+    }
+    */
+
+    public void Configure(Item itemData) {
+        item = itemData;
+        stackSize = 1;
         stackSizeText.text = stackSize.ToString();
     }
 

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+    public GameObject inventorySlotPrefab;
+
     #region Singleton
     public static Inventory instance;
     private void Awake()
@@ -59,10 +61,18 @@ public class Inventory : MonoBehaviour
             //GameObject newInstance = Instantiate(InventoryUI.Instance.inventorySlotPrefab);
             //InventorySlot newSlot = newInstance.AddComponent<InventorySlot>();
             //newSlot.AddItem(itemData);
-            InventorySlot newSlot = new InventorySlot(itemData);
-            Debug.Log("Adding " + newSlot.item.name);
-            items.Add(newSlot);
-            itemDictionary.Add(itemData.name, newSlot);
+
+            // Note from Drake: For Unity, GameObjects are created in-game using static method Instantiate rather than made a new class object
+            // InventorySlot newSlot = new InventorySlot(itemData);
+
+            // Rather than creating a new class with the itemData as a parameter, we're going to Instantiate it in Unity and then call a method to update it
+            // with the itemData as a parameter instead
+            GameObject newSlotObject = Instantiate(inventorySlotPrefab, transform.position, Quaternion.identity);
+            InventorySlot newInventorySlot = newSlotObject.GetComponent<InventorySlot>();
+            newInventorySlot.Configure(itemData);
+            Debug.Log("Adding " + newInventorySlot.item.name);
+            items.Add(newInventorySlot);
+            itemDictionary.Add(itemData.name, newInventorySlot);
         }
         if (onItemChangedCallback != null)
         {
