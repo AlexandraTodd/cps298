@@ -51,7 +51,7 @@ public class InventorySlot : MonoBehaviour
     {
         item = newSlot.item;
         Icon.enabled = true;
-        Icon.material = 
+        //Icon.material = 
         stackSize = newSlot.stackSize;
         stackSizeText.text = newSlot.stackSizeString;
         itemNameText.text = newSlot.itemNameString;
