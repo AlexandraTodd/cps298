@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour {
-    public static PauseMenu Instance;
+    [HideInInspector] public static PauseMenu Instance;
     public Canvas menuCanvas;
 
     public Image blackTintBackground;
@@ -14,6 +14,8 @@ public class PauseMenu : MonoBehaviour {
     public Button continueGameButton;
     public Button newGameButton;
     public Button exitToMenuButton;
+
+    [HideInInspector] public Vector3 playerPosition;
 
     private void Awake() {
         // Singleton, important for returning to main menu from mid-game
@@ -79,5 +81,8 @@ public class PauseMenu : MonoBehaviour {
         continueGameButton.gameObject.SetActive(!isInGame);
         newGameButton.gameObject.SetActive(!isInGame);
         exitToMenuButton.gameObject.SetActive(isInGame);
+
+        // Resets player position to their house
+        if (isInGame) playerPosition = new Vector3(-0.715f, 1.5f, 0f);
     }
 }

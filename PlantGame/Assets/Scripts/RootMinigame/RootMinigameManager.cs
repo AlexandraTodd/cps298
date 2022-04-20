@@ -131,7 +131,7 @@ public class RootMinigameManager : MonoBehaviour {
         int[] rootStartingColor = new int[0];
         int[] rootEndingColor = new int[0];
         float[] rootEndWidth = new float[0];
-        bool[] rootHasFlower = new bool[0];
+        int[] rootNutrientCount = new int[0];
 
         // Enable all nutrients by default if its a new map
         nutrientsEnabled = new bool[RandomNutrientCount()];
@@ -157,7 +157,7 @@ public class RootMinigameManager : MonoBehaviour {
                 rootStartingColor = data.startingColor;
                 rootEndingColor = data.endingColor;
                 rootEndWidth = data.endWidth;
-                rootHasFlower = data.hasFlower;
+                rootNutrientCount = data.nutrientCount;
                 generationSeed = data.generationSeed;
                 nutrientsEnabled = data.nutrientsEnabled;
             }
@@ -189,12 +189,14 @@ public class RootMinigameManager : MonoBehaviour {
             plantedRootDetail.stem.endColor = new Color(endingColorR, endingColorG, endingColorB, endingColorA);
 
             plantedRootDetail.stem.endWidth = rootEndWidth[r];
-            plantedRootDetail.hasFlower = rootHasFlower[r];
+            plantedRootDetail.nutrientCount = rootNutrientCount[r];
 
             for (int p = 0; p < pointsPerRoot[r]; p++) {
                 plantedRootDetail.stem.SetPosition(p, coordinates[runningIndex]);
                 runningIndex++;
             }
+
+            plantedRoots.Add(plantedRootDetail);
         }
 
         // This fixes the random generation to the loaded saves, causing it to produce the exact same results
@@ -283,7 +285,7 @@ public class RootMinigameManager : MonoBehaviour {
         List<int> outputStartingColors = new List<int>();
         List<int> outputEndingColors = new List<int>();
         List<float> outputEndWidth = new List<float>();
-        List<bool> outputHasFlower = new List<bool>();
+        List<int> outputNutrientCount = new List<int>();
 
         for (int i = 0; i < plantedRoots.Count; i++) {
             outputPointsPerRoot.Add(plantedRoots[i].stem.positionCount);
@@ -315,11 +317,11 @@ public class RootMinigameManager : MonoBehaviour {
             outputEndingColors.Add(Int32.Parse(constructionEndOutput));
 
             outputEndWidth.Add(plantedRoots[i].stem.endWidth);
-            outputHasFlower.Add(plantedRoots[i].hasFlower);
+            outputNutrientCount.Add(plantedRoots[i].nutrientCount);
         }
 
         RootMinigameSave data = new RootMinigameSave(outputCoordinates.ToArray(), outputPointsPerRoot.ToArray(), generationSeed, 
-            outputStartingColors.ToArray(), outputEndingColors.ToArray(), outputEndWidth.ToArray(), nutrientsEnabled, outputHasFlower.ToArray());
+            outputStartingColors.ToArray(), outputEndingColors.ToArray(), outputEndWidth.ToArray(), nutrientsEnabled, outputNutrientCount.ToArray());
         formatter.Serialize(stream, data);
         stream.Close();
     }
