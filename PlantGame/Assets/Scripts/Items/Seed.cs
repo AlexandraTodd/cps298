@@ -17,6 +17,6 @@ public class Seed : Item
     {
         // Mini Game
         // Add to Planter
-        Debug.Log("Using " + name);
+        Debug.Log("Using " + seedName);
     }
 }
