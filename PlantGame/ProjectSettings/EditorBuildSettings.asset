@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/RootMinigame.unity
     guid: 16ff8e6b424db96448ea86c6c166e523
   - enabled: 1
-    path: Assets/Scenes/Inventory.unity
+    path: Assets/Scenes/InventoryFlower.unity
     guid: bd3df6f486422b9459424451d995697c
   m_configObjects: {}
