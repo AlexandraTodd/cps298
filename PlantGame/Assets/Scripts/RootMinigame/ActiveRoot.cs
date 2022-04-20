@@ -21,6 +21,7 @@ public class ActiveRoot : MonoBehaviour {
     [HideInInspector] public bool currentlyRotating;
 
     [HideInInspector] public float strain = 0f;
+    [HideInInspector] public int colorIndex = 0;
     [HideInInspector] public int nutrientCount = 0;
     [HideInInspector] public RootMinigameManager manager;
 
@@ -35,6 +36,8 @@ public class ActiveRoot : MonoBehaviour {
             if (currentPointer != pointer) pointer.enabled = false;
             else pointer.enabled = true;
         }
+
+        colorIndex = Random.Range(0, 12);
 
         UpdateColor(Color.green);
     }
@@ -72,19 +75,19 @@ public class ActiveRoot : MonoBehaviour {
         }
         */
 
-        // Detect collisions with other roots. false in EndRoot means the plant was unsuccessful
+        // Detect collisions with other roots. 0 in EndRoot means the plant was unsuccessful
         foreach (PlantedRoot pr in RootMinigameManager.Instance.plantedRoots) {
             for (int i = 1; i < pr.stem.positionCount; i++) {
                 if (Physics2D.Raycast(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1) - pr.stem.GetPosition(i), Vector2.Distance(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1)))) {
-                    EndRoot(false);
+                    EndRoot(0);
                 }
             }
         }
 
-        // Detect collisions with own root. false in EndRoot means the plant was unsuccessful
+        // Detect collisions with own root. 0 in EndRoot means the plant was unsuccessful
         for (int i = 1; i < stem.positionCount; i++) {
             if (Physics2D.Raycast(stem.GetPosition(i), stem.GetPosition(i - 1) - stem.GetPosition(i), Vector2.Distance(stem.GetPosition(i), stem.GetPosition(i - 1)))) {
-                EndRoot(false);
+                EndRoot(0);
             }
         }
 
@@ -101,21 +104,21 @@ public class ActiveRoot : MonoBehaviour {
         }
 
         if (strain >= 4f) {
-            EndRoot(false);
+            EndRoot(0);
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Collision")) {
-            EndRoot(false);
+            EndRoot(0);
         }
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water")) {
-            EndRoot(true);
+            EndRoot(nutrientCount);
         }
     }
 
-    void EndRoot(bool successfulPlant) {
+    void EndRoot(int nutrientCount) {
         // Snapping the root to where the collider landed looks more natural
         stem.SetPosition(stem.positionCount - 1, circleCollider.transform.position);
 
@@ -129,12 +132,15 @@ public class ActiveRoot : MonoBehaviour {
         plantedRootDetail.stem.startColor = stem.startColor;
         plantedRootDetail.stem.endColor = stem.endColor;
         plantedRootDetail.stem.endWidth = stem.endWidth;
+        plantedRootDetail.colorIndex = colorIndex;
+        plantedRootDetail.nutrientCount = nutrientCount;
 
-        if (!successfulPlant) {
+        if (nutrientCount == 0) {
             plantedRootDetail.stem.startColor = Color.red;
             plantedRootDetail.stem.endColor = Color.red;
         }
 
+        RootMinigameManager.Instance.plantedRoots.Add(plantedRootDetail);
         RootMinigameManager.Instance.SaveRoots();
 
         Destroy(this.gameObject);

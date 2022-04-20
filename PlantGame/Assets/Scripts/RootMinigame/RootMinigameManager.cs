@@ -49,24 +49,35 @@ public class RootMinigameManager : MonoBehaviour {
                 defaultCamera.orthographicSize = Mathf.Lerp(defaultCamera.orthographicSize, 100f, Time.deltaTime * 4f);
                 defaultCamera.transform.position = Vector3.Lerp(defaultCamera.transform.position, new Vector3(0f, -100f, -10f), Time.deltaTime * 4f);
 
-                Vector2 testPoint = defaultCamera.ScreenToWorldPoint(Input.mousePosition);
-                if (testPoint.y > -90f) {
-                    if (!spawnPointer.activeInHierarchy) spawnPointer.SetActive(true);
-                    spawnPointer.transform.position = new Vector3(Mathf.Clamp(defaultCamera.ScreenToWorldPoint(Input.mousePosition).x, -46f, 46f), -4f, 0f);
+                // Check if nutrients are available
+                // If there are 0, then planting roots is useless and we should not allow players to do it
+                bool nutrientsAvailable = false;
+                for(int i = 0; i < nutrientsEnabled.Length; i++) {
+                    if (nutrientsEnabled[i]) nutrientsAvailable = true;
+                }
 
-                    if (Input.GetMouseButton(0)) {
-                        // Recenters mouse to center
-                        Cursor.lockState = CursorLockMode.Locked;
-                        Cursor.lockState = CursorLockMode.None;
+                if (nutrientsAvailable) {
+                    Vector2 testPoint = defaultCamera.ScreenToWorldPoint(Input.mousePosition);
+                    if (testPoint.y > -90f) {
+                        if (!spawnPointer.activeInHierarchy) spawnPointer.SetActive(true);
+                        spawnPointer.transform.position = new Vector3(Mathf.Clamp(defaultCamera.ScreenToWorldPoint(Input.mousePosition).x, -46f, 46f), -4f, 0f);
 
-                        // Creates the root
-                        GameObject newRoot = Instantiate(activeRootPrefab, new Vector2(spawnPointer.transform.position.x, 0f), Quaternion.Euler(new Vector3(0f, 0f, 270f)));
-                        activeRoot = newRoot.GetComponent<ActiveRoot>();
-                        activeRoot.manager = this;
-                        spawnPointer.SetActive(false);
+                        if (Input.GetMouseButton(0)) {
+                            // Recenters mouse to center
+                            Cursor.lockState = CursorLockMode.Locked;
+                            Cursor.lockState = CursorLockMode.None;
 
-                        StartCoroutine(PauseWait());
-                    }
+                            // Creates the root
+                            GameObject newRoot = Instantiate(activeRootPrefab, new Vector2(spawnPointer.transform.position.x, 0f), Quaternion.Euler(new Vector3(0f, 0f, 270f)));
+                            activeRoot = newRoot.GetComponent<ActiveRoot>();
+                            activeRoot.manager = this;
+                            spawnPointer.SetActive(false);
+
+                            StartCoroutine(PauseWait());
+                        }
+                    } else if (spawnPointer.activeInHierarchy) spawnPointer.SetActive(false);
+                } else {
+                    if (spawnPointer.activeInHierarchy) spawnPointer.SetActive(false);
                 }
             }
         } else {
@@ -120,6 +131,8 @@ public class RootMinigameManager : MonoBehaviour {
         int[] rootStartingColor = new int[0];
         int[] rootEndingColor = new int[0];
         float[] rootEndWidth = new float[0];
+        int[] rootColorIndex = new int[0];
+        int[] rootNutrientCount = new int[0];
 
         // Enable all nutrients by default if its a new map
         nutrientsEnabled = new bool[RandomNutrientCount()];
@@ -145,6 +158,8 @@ public class RootMinigameManager : MonoBehaviour {
                 rootStartingColor = data.startingColor;
                 rootEndingColor = data.endingColor;
                 rootEndWidth = data.endWidth;
+                rootNutrientCount = data.nutrientCount;
+                rootColorIndex = data.colorIndex;
                 generationSeed = data.generationSeed;
                 nutrientsEnabled = data.nutrientsEnabled;
             }
@@ -176,11 +191,15 @@ public class RootMinigameManager : MonoBehaviour {
             plantedRootDetail.stem.endColor = new Color(endingColorR, endingColorG, endingColorB, endingColorA);
 
             plantedRootDetail.stem.endWidth = rootEndWidth[r];
+            plantedRootDetail.colorIndex = rootColorIndex[r];
+            plantedRootDetail.nutrientCount = rootNutrientCount[r];
 
             for (int p = 0; p < pointsPerRoot[r]; p++) {
                 plantedRootDetail.stem.SetPosition(p, coordinates[runningIndex]);
                 runningIndex++;
             }
+
+            plantedRoots.Add(plantedRootDetail);
         }
 
         // This fixes the random generation to the loaded saves, causing it to produce the exact same results
@@ -269,6 +288,8 @@ public class RootMinigameManager : MonoBehaviour {
         List<int> outputStartingColors = new List<int>();
         List<int> outputEndingColors = new List<int>();
         List<float> outputEndWidth = new List<float>();
+        List<int> outputColorIndex = new List<int>();
+        List<int> outputNutrientCount = new List<int>();
 
         for (int i = 0; i < plantedRoots.Count; i++) {
             outputPointsPerRoot.Add(plantedRoots[i].stem.positionCount);
@@ -300,9 +321,12 @@ public class RootMinigameManager : MonoBehaviour {
             outputEndingColors.Add(Int32.Parse(constructionEndOutput));
 
             outputEndWidth.Add(plantedRoots[i].stem.endWidth);
+            outputColorIndex.Add(plantedRoots[i].colorIndex);
+            outputNutrientCount.Add(plantedRoots[i].nutrientCount);
         }
 
-        RootMinigameSave data = new RootMinigameSave(outputCoordinates.ToArray(), outputPointsPerRoot.ToArray(), generationSeed, outputStartingColors.ToArray(), outputEndingColors.ToArray(), outputEndWidth.ToArray(), nutrientsEnabled);
+        RootMinigameSave data = new RootMinigameSave(outputCoordinates.ToArray(), outputPointsPerRoot.ToArray(), generationSeed, 
+            outputStartingColors.ToArray(), outputEndingColors.ToArray(), outputEndWidth.ToArray(), nutrientsEnabled, outputColorIndex.ToArray(), outputNutrientCount.ToArray());
         formatter.Serialize(stream, data);
         stream.Close();
     }

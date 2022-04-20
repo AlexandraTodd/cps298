@@ -1,22 +1,24 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "New Flower", menuName = "Inventory/Flower")]
 public class Flower : Item
 {
-    public string flowerName = "Flower";  // add color ?
-    public int price = 5;
-    public Sprite flowerIcon = Resources.Load("flower", typeof(Sprite)) as Sprite;  // color shader ?
+    public int intensity = 1;
 
-    Flower(int colorSet, int intensitySet)
+    public static Flower CreateInstance(int colorSet, int intensitySet)
     {
-        flowerName = intensityToString(intensitySet) + " " + colorToString(colorSet) + " Flower";
-        flowerIcon = Resources.Load("flower", typeof(Sprite)) as Sprite;  // color shader 
-        Color = colorSet;
-        Intensity = intensitySet;
+        Flower data = ScriptableObject.CreateInstance<Flower>();
+        data.name = data.intensityToString(intensitySet) + " " + data.colorToString(colorSet) + " Flower";
+        data.color = colorSet;
+        data.intensity = intensitySet;
+        data.price = 3 + intensitySet;
+        data.itemType = 0;
+        return data;
     }
 
     public override void Use()
     {
-        // Sell
-        Debug.Log("Using " + flowerName);
+        // Replant
+        Debug.Log("Using " + name);
     }
 }

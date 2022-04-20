@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class PlantedRoot : MonoBehaviour {
     public LineRenderer stem;
-
-    private void Start() {
-        RootMinigameManager.Instance.plantedRoots.Add(this);
-    }
+    [HideInInspector] public int colorIndex = -1;
+    [HideInInspector] public int nutrientCount = 0;
 }
 
