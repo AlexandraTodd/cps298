@@ -2,59 +2,42 @@ using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
-    public static InventoryUI Instance;
-    public Transform FlowerItemsParent;
-    public Transform SeedItemsParent;
-    public GameObject FlowerInventoryUI;
-    public GameObject SeedInventoryUI;
+    public Transform ItemsParent;
+    public GameObject inventoryUI;
     Inventory inventory;
-    public InventorySlot[] FlowerSlots;
-    public InventorySlot[] SeedSlots;
-    //public GameObject inventorySlotPrefab;
+    InventorySlot[] slots;
 
     void Start()
     {
         inventory = Inventory.instance;
         inventory.onItemChangedCallback += UpdateUI;
-        FlowerSlots = FlowerItemsParent.GetComponentsInChildren<InventorySlot>();
-        SeedSlots = SeedItemsParent.GetComponentsInChildren<InventorySlot>();
-        FlowerInventoryUI.SetActive(true);    // testing
+        slots = ItemsParent.GetComponentsInChildren<InventorySlot>();
+
+
         UpdateUI();
     }
 
-    void Awake()
+    void Update()
     {
-        Instance = this;
+        if(Input.GetButtonDown("Inventory"))
+        {
+            inventoryUI.SetActive(!inventoryUI.activeSelf);
+        }
     }
 
     void UpdateUI()
     {
-        int flowers = 0;
-        int seeds = 0;
-        for (int i = 0;  i < inventory.items.Count; i++)
+        for (int i = 0; i < slots.Length; i++)
         {
-            if(inventory.items[i].item.itemType == 0)
+            if (i < inventory.items.Count)
             {
-                FlowerSlots[flowers].AddSlot(inventory.items[i]);
-                flowers++;
+                slots[i].AddItem(inventory.items[i]);
             }
             else
             {
-                SeedSlots[seeds].AddSlot(inventory.items[i]);
-                seeds++;
+                slots[i].ClearSlot();
             }
         }
-
-        for (int i = flowers; i < FlowerSlots.Length; i++)
-        {
-            FlowerSlots[i].ClearSlot();
-        }
-
-        for (int i = seeds; i < SeedSlots.Length; i++)
-        {
-            SeedSlots[i].ClearSlot();
-        }
-
         Debug.Log("Updating UI");
     }
 }
