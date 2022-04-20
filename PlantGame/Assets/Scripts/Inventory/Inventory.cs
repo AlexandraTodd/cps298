@@ -31,6 +31,8 @@ public class Inventory : MonoBehaviour
             Add(test2);
             Seed test3 = Seed.CreateInstance(10);
             Add(test3);
+            Seed test4 = Seed.CreateInstance(5);
+            Add(test4);
         }
     }
 

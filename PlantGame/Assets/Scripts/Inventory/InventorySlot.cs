@@ -8,6 +8,9 @@ public class InventorySlot : MonoBehaviour
     public int stackSize;
     private string stackSizeString;
     public Text stackSizeText;
+    private string itemNameString;
+    public Text itemNameText;
+    //public Material itemMaterial;
 
     // Note from Drake:
     // This does not get used. Instantiating Unity MonoBehaviour objects behave differently than creating instances of classes and use Awake()/Start() instead
@@ -41,14 +44,17 @@ public class InventorySlot : MonoBehaviour
         item = itemData;
         stackSize = 1;
         stackSizeString = stackSize.ToString();
+        itemNameString = item.name;
     }
 
     public void AddSlot(InventorySlot newSlot)
     {
         item = newSlot.item;
         Icon.enabled = true;
+        Icon.material = 
         stackSize = newSlot.stackSize;
         stackSizeText.text = newSlot.stackSizeString;
+        itemNameText.text = newSlot.itemNameString;
     }
 
     public void AddToStack()   // testing
