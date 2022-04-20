@@ -10,6 +10,7 @@ public class InventoryUI : MonoBehaviour
     Inventory inventory;
     public InventorySlot[] FlowerSlots;
     public InventorySlot[] SeedSlots;
+    public static GameObject go;
     //public GameObject inventorySlotPrefab;
 
     void Start()
@@ -19,6 +20,7 @@ public class InventoryUI : MonoBehaviour
         FlowerSlots = FlowerItemsParent.GetComponentsInChildren<InventorySlot>();
         SeedSlots = SeedItemsParent.GetComponentsInChildren<InventorySlot>();
         FlowerInventoryUI.SetActive(true);    // testing
+        go = new GameObject();
         UpdateUI();
     }
 
