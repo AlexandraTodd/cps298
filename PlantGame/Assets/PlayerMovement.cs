@@ -11,12 +11,14 @@ public class PlayerMovement : MonoBehaviour
     new public BoxCollider2D collider;
     public LayerMask collisionMask;
     private RaycastHit2D hit;
+    private SoundRandomizer walkSounds;
 
     // Start is called before the first frame update
     void Start()
     {
         // This is used to remember where the player was when moving between rooms for shop, minigame, etc
         transform.position = PauseMenu.Instance.playerPosition;
+        walkSounds = GetComponent<SoundRandomizer>();
     }
 
     // Update is called once per frame
@@ -34,10 +36,12 @@ public class PlayerMovement : MonoBehaviour
         if (direction.x != 0 || direction.y != 0)
         {
             animator.SetFloat("Speed", 1);
+            walkSounds.StartSound();
         }
         else
         {
             animator.SetFloat("Speed", 0);
+            walkSounds.StopSound();
         }
     }
 
