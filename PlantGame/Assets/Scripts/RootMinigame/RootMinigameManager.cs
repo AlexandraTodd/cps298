@@ -40,6 +40,11 @@ public class RootMinigameManager : MonoBehaviour {
         activeRoot.GetComponent<Rigidbody2D>().WakeUp();
     }
 
+    private IEnumerator ExitWait() {
+        yield return new WaitForSeconds(2);
+        SceneManager.LoadScene("TownMap");
+    }
+
     void Update() {
         // No active root
         if (activeRoot == null) {
@@ -78,6 +83,7 @@ public class RootMinigameManager : MonoBehaviour {
                     } else if (spawnPointer.activeInHierarchy) spawnPointer.SetActive(false);
                 } else {
                     if (spawnPointer.activeInHierarchy) spawnPointer.SetActive(false);
+                    StartCoroutine(ExitWait());
                 }
             }
         } else {
@@ -119,6 +125,13 @@ public class RootMinigameManager : MonoBehaviour {
 
             SaveRoots();
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        // Exit
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            // Erase progress so we start from new next time
+            File.Delete(Application.persistentDataPath + "/roots"+currentSlot+".dat");
+            SceneManager.LoadScene("TownMap");
         }
     }
 

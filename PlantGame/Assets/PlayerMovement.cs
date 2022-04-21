@@ -16,9 +16,9 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // This is used to remember where the player was when moving between rooms for shop, minigame, etc
-        transform.position = PauseMenu.Instance.playerPosition;
         walkSounds = GetComponent<SoundRandomizer>();
+        // This is used to remember where the player was when moving between rooms for shop, minigame, etc
+        if (PauseMenu.Instance) transform.position = PauseMenu.Instance.playerPosition;
     }
 
     // Update is called once per frame
