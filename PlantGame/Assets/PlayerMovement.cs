@@ -24,6 +24,16 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Cancel if we're paused
+        if (PauseMenu.Instance != null) {
+            if (PauseMenu.Instance.menuCanvas.enabled) {
+                direction = Vector2.zero;
+                animator.SetFloat("Speed", 0);
+                walkSounds.StopSound();
+                return;
+            }
+        }
+
         direction.x = Input.GetAxisRaw("Horizontal");
         direction.y = Input.GetAxisRaw("Vertical");
         direction.Normalize();

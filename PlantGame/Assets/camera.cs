@@ -10,6 +10,6 @@ public class camera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = player.transform.position + new Vector3(0.0f, .1f, -5);
+        if (!OverworldManager.Instance.controllingCamera) transform.position = player.transform.position + new Vector3(0.0f, .1f, -5);
     }
 }

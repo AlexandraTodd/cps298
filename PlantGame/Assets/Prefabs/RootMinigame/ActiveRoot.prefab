@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3715721580376912184}
   - component: {fileID: 3715721580376912185}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Tier2Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3715721580711993616}
   - component: {fileID: 3715721580711993617}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Tier1Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3715721580842007654}
   - component: {fileID: 3715721580842007655}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Tier0Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 3715721581037499468}
   - component: {fileID: 3715721581037499459}
   - component: {fileID: 3715721581037499470}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ActiveRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -313,6 +313,7 @@ MonoBehaviour:
   stem: {fileID: 0}
   currentlyRotating: 0
   strain: 0
+  colorIndex: 0
   nutrientCount: 0
   manager: {fileID: 0}
 --- !u!50 &3715721581037499468
@@ -351,7 +352,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0.3, y: 0}
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Radius: 0.2
 --- !u!120 &3715721581037499470
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -460,7 +461,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3715721581073116056}
   - component: {fileID: 3715721581073116057}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Tier3Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}

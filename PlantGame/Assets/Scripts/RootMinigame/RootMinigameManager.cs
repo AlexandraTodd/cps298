@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -27,9 +28,42 @@ public class RootMinigameManager : MonoBehaviour {
     public static int currentSlot = -1;
     public bool paused = false;
 
+    public GameObject instructionPrompt;
+    public TMP_Text instructionPromptText;
+    public GameObject exitMinigameButton;
+    [HideInInspector] public float fadeInAnimation = 0f;
+    [HideInInspector] public float fadeOutAnimation = 0f;
+    public Image fadeAnimationOverlay;
+
+    [HideInInspector] public int cursorGrabbed = -1;
+    public Image cursorImage;
+
+    public GameObject placeholderSeedList;
+    public GameObject placeholderSeedPrefab;
+
     void Awake() {
-        Application.targetFrameRate = -1;
         Instance = this;
+
+        // Opening fade in animation
+        cursorImage.enabled = false;
+        exitMinigameButton.SetActive(false);
+        placeholderSeedList.SetActive(false);
+        fadeAnimationOverlay.enabled = true;
+        fadeAnimationOverlay.color = Color.black;
+        fadeInAnimation = 1f;
+        
+        // Create a seed for each of the 12 colors
+        for (int i = 0; i < 12; i++) {
+            GameObject newSeedDrag = Instantiate(placeholderSeedPrefab, placeholderSeedList.transform);
+            newSeedDrag.GetComponent<PlaceholderSeedDrag>().SetColor(i);
+        }
+
+        instructionPromptText.text = "Guide the flowers' roots to the nutrients and water they need!\n\n• Use your mouse to click on and drag a seed from the menu on the left onto the planter."
+            + "\n\n• A root will then emerge and follow your mouse. Guide it into one or more " + $"{"nutrients".AddColor(new Color(0.6f, 0.4f, 0f, 1f))}" + " before completing it by reaching a source of "
+            + $"{"water".AddColor(new Color(0f, 0.75f, 1f, 1f))}" + "."
+            + "\n\n• Avoid colliding with " + $"{"rocks".AddColor(Color.black)}" + " or other roots - this will break your root!"
+            +"\n\n• Roots thin out the more they travel upward and eventually die.";
+
         LoadPlantMinigameProgress();
     }
 
@@ -41,16 +75,53 @@ public class RootMinigameManager : MonoBehaviour {
     }
 
     private IEnumerator ExitWait() {
-        yield return new WaitForSeconds(2);
-        SceneManager.LoadScene("TownMap");
+        yield return new WaitForSeconds(1);
+        InitiateExit();
+    }
+
+    public void InitiateExit() {
+        fadeOutAnimation = 1f;
     }
 
     void Update() {
+        if (fadeOutAnimation > 0f) {
+            exitMinigameButton.SetActive(false);
+            placeholderSeedList.SetActive(false);
+            delayBeforeReturnToDefaultView = 1f;
+            fadeAnimationOverlay.enabled = true;
+            fadeAnimationOverlay.color = new Color(1f, 1f, 1f, 1f - fadeOutAnimation);
+
+            defaultCamera.orthographicSize = Mathf.Lerp(defaultCamera.orthographicSize, 1000f, Time.deltaTime * 0.5f);
+
+            fadeOutAnimation = Mathf.Max(0f, fadeOutAnimation - Time.deltaTime);
+            if (fadeOutAnimation == 0f) {
+                SceneManager.LoadScene("TownMap");
+            }
+        }
+
+        if (fadeInAnimation > 0f) {
+            fadeAnimationOverlay.enabled = true;
+            Color fadeInOverlayColor = fadeAnimationOverlay.color;
+            fadeInOverlayColor.a = Mathf.Min(1f, fadeInOverlayColor.a - (Time.deltaTime * 2f));
+            fadeAnimationOverlay.color = fadeInOverlayColor;
+
+            fadeInAnimation = Mathf.Max(0f, fadeInAnimation - Time.deltaTime);
+            if (fadeInAnimation == 0f) {
+                fadeAnimationOverlay.enabled = false;
+                instructionPrompt.SetActive(true);
+            }
+        }
+
         // No active root
         if (activeRoot == null) {
             // postDeathDelay 
             delayBeforeReturnToDefaultView = Mathf.Max(0f, delayBeforeReturnToDefaultView - Time.deltaTime);
             if (delayBeforeReturnToDefaultView == 0f) {
+                if (fadeInAnimation == 0f) {
+                    exitMinigameButton.SetActive(true);
+                    placeholderSeedList.SetActive(true);
+                }
+
                 defaultCamera.orthographicSize = Mathf.Lerp(defaultCamera.orthographicSize, 100f, Time.deltaTime * 4f);
                 defaultCamera.transform.position = Vector3.Lerp(defaultCamera.transform.position, new Vector3(0f, -100f, -10f), Time.deltaTime * 4f);
 
@@ -62,26 +133,61 @@ public class RootMinigameManager : MonoBehaviour {
                 }
 
                 if (nutrientsAvailable) {
+                    // Grabs where our cursor is
                     Vector2 testPoint = defaultCamera.ScreenToWorldPoint(Input.mousePosition);
-                    if (testPoint.y > -90f) {
+
+                    // If we're dragging a seed, drag it where our cursor is
+                    if (cursorGrabbed != -1) {
+                        if (!cursorImage.enabled) {
+                            cursorImage.enabled = true;
+
+                            // Transparent as a visual cue its not being dropped in a proper spot
+                            Color cursorImageColor = cursorImage.color;
+                            cursorImageColor.a = 0.25f;
+                            cursorImage.color = cursorImageColor;
+                        }
+                        cursorImage.transform.position = testPoint;
+                    } else if (cursorImage.enabled) cursorImage.enabled = false;
+
+                    // If we're dragging a seed near the top of the planter, show a cursor, and release mouse to begin planting it
+                    if (testPoint.y >= -90f && testPoint.x <= 46f && testPoint.x >= -46f && cursorGrabbed != -1) {
                         if (!spawnPointer.activeInHierarchy) spawnPointer.SetActive(true);
-                        spawnPointer.transform.position = new Vector3(Mathf.Clamp(defaultCamera.ScreenToWorldPoint(Input.mousePosition).x, -46f, 46f), -4f, 0f);
+                        spawnPointer.transform.position = new Vector3(testPoint.x, -4f, 0f);
 
-                        if (Input.GetMouseButton(0)) {
-                            // Recenters mouse to center
-                            Cursor.lockState = CursorLockMode.Locked;
-                            Cursor.lockState = CursorLockMode.None;
+                        // Snap cursor image to right under the spawn arrow as a visual aid, and make its visual opaque
+                        cursorImage.transform.position = new Vector3(testPoint.x, -12f, 0f);
+                        Color cursorImageColor = cursorImage.color;
+                        cursorImageColor.a = Mathf.Lerp(cursorImageColor.a, 1f, Time.deltaTime * 4f);
+                        cursorImage.color = cursorImageColor;
 
+                        // Let go of mouse while dragging a seed into the planter, initiates the minigame with the seed type we want
+                        if (Input.GetMouseButtonUp(0)) {
                             // Creates the root
                             GameObject newRoot = Instantiate(activeRootPrefab, new Vector2(spawnPointer.transform.position.x, 0f), Quaternion.Euler(new Vector3(0f, 0f, 270f)));
+                            exitMinigameButton.SetActive(false);
+                            placeholderSeedList.SetActive(false);
                             activeRoot = newRoot.GetComponent<ActiveRoot>();
+                            activeRoot.colorIndex = cursorGrabbed;
                             activeRoot.manager = this;
                             spawnPointer.SetActive(false);
 
+                            cursorImage.enabled = false;
+                            cursorGrabbed = -1;
+
                             StartCoroutine(PauseWait());
                         }
-                    } else if (spawnPointer.activeInHierarchy) spawnPointer.SetActive(false);
+                    } else {
+                        // Our mouse is currently not in the planter area, so hide the arrow helping us decide where to spawn
+                        if (spawnPointer.activeInHierarchy) spawnPointer.SetActive(false);
+                        if (cursorGrabbed != -1) {
+                            if (Input.GetMouseButtonUp(0)) {
+                                cursorGrabbed = -1;
+                                cursorImage.enabled = false;
+                            }
+                        }
+                    }
                 } else {
+                    // Game automatically goes back to overworld if we're out of nutrients (thanks Jack!)
                     if (spawnPointer.activeInHierarchy) spawnPointer.SetActive(false);
                     StartCoroutine(ExitWait());
                 }
@@ -108,30 +214,9 @@ public class RootMinigameManager : MonoBehaviour {
             }
         }
 
-        // Clear save
-        if (Input.GetKeyDown(KeyCode.D)) {
-            foreach (PlantedRoot pr in plantedRoots) {
-                Destroy(pr.gameObject);
-            }
-
-            // This clears all the active roots and creates a new seed before saving the file and reloading the scene
-            plantedRoots.Clear();
-            generationSeed = UnityEngine.Random.Range(0, 2147483647);
-
-            // This is kind of funky, but due to how nutrient availability is maintained, we have to initialize nutrients here
-            UnityEngine.Random.InitState(generationSeed);
-            nutrientsEnabled = new bool[RandomNutrientCount()];
-            for (int i = 0; i < nutrientsEnabled.Length; i++) nutrientsEnabled[i] = true;
-
-            SaveRoots();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-
         // Exit
         if (Input.GetKeyDown(KeyCode.Escape)) {
-            // Erase progress so we start from new next time
-            File.Delete(Application.persistentDataPath + "/roots"+currentSlot+".dat");
-            SceneManager.LoadScene("TownMap");
+            InitiateExit();
         }
     }
 
@@ -273,7 +358,7 @@ public class RootMinigameManager : MonoBehaviour {
                 }
 
                 foreach (GameObject go in aquifers) {
-                    if (Vector3.Distance(go.transform.position, newPos) <= (32f * granularity)) spotFound = false;
+                    if (Vector3.Distance(go.transform.position, newPos) <= 32f) spotFound = false;
                 }
 
                 foreach (GameObject go in nutrients) {
@@ -347,5 +432,9 @@ public class RootMinigameManager : MonoBehaviour {
     // This is called several times, put into a separate function to help ensure its consistent
     public int RandomNutrientCount() {
         return 7 + UnityEngine.Random.Range(0, 7);
+    }
+
+    public void CloseInstructionPrompt() {
+        instructionPrompt.SetActive(false);
     }
 }

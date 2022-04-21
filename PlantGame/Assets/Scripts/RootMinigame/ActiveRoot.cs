@@ -27,7 +27,7 @@ public class ActiveRoot : MonoBehaviour {
 
     private void Awake() {
         stem = GetComponent<LineRenderer>();
-        stem.SetPosition(0, new Vector3(transform.position.x, transform.position.y + 16));
+        stem.SetPosition(0, new Vector3(transform.position.x, transform.position.y + 16, 0f));
         stem.SetPosition(1, transform.position);
 
         target = transform.position + (transform.right * speed * Time.deltaTime);
@@ -36,8 +36,6 @@ public class ActiveRoot : MonoBehaviour {
             if (currentPointer != pointer) pointer.enabled = false;
             else pointer.enabled = true;
         }
-
-        colorIndex = Random.Range(0, 12);
 
         UpdateColor(Color.green);
     }
@@ -60,36 +58,28 @@ public class ActiveRoot : MonoBehaviour {
             currentlyRotating = false;
         }
 
-        /*
-        // Detect collisions with aquifers. true in EndRoot means the plant was successful
-        foreach (GameObject a in RootMinigameManager.Instance.aquifers) {
-            if (Vector2.Distance(transform.position, a.transform.position) <= ((a.transform.localScale.x / 2f) + circleCollider.radius)) {
-                EndRoot(true);
-            }
-        }
-
-        foreach (GameObject o in RootMinigameManager.Instance.obstacles) {
-            if (Vector2.Distance(transform.position, o.transform.position) <= ((o.transform.localScale.x / 2f) + circleCollider.radius)) {
-                EndRoot(false);
-            }
-        }
-        */
+        // Changing the plantedRoots list mid collision would cause errors, so this bool will be used to buffer a root end if its found
+        bool rootCollided = false;
 
         // Detect collisions with other roots. 0 in EndRoot means the plant was unsuccessful
         foreach (PlantedRoot pr in RootMinigameManager.Instance.plantedRoots) {
             for (int i = 1; i < pr.stem.positionCount; i++) {
-                if (Physics2D.Raycast(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1) - pr.stem.GetPosition(i), Vector2.Distance(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1)))) {
-                    EndRoot(0);
+                if (Physics2D.Raycast(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1) - pr.stem.GetPosition(i), Vector2.Distance(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1)), (1 << 9))) {
+                    Debug.Log("Collided with pre-existing root");
+                    rootCollided = true;
                 }
             }
         }
 
         // Detect collisions with own root. 0 in EndRoot means the plant was unsuccessful
         for (int i = 1; i < stem.positionCount; i++) {
-            if (Physics2D.Raycast(stem.GetPosition(i), stem.GetPosition(i - 1) - stem.GetPosition(i), Vector2.Distance(stem.GetPosition(i), stem.GetPosition(i - 1)))) {
-                EndRoot(0);
+            if (Physics2D.Raycast(stem.GetPosition(i), stem.GetPosition(i - 1) - stem.GetPosition(i), Vector2.Distance(stem.GetPosition(i), stem.GetPosition(i - 1)), (1 << 9))) {
+                Debug.Log("Collided with own root");
+                rootCollided = true;
             }
         }
+
+        if (rootCollided) EndRoot(0);
 
         rb.velocity = transform.right * speed * Time.deltaTime;
 
@@ -104,12 +94,14 @@ public class ActiveRoot : MonoBehaviour {
         }
 
         if (strain >= 4f) {
+            Debug.Log("Strained");
             EndRoot(0);
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Collision")) {
+            Debug.Log("Collided with obstacle");
             EndRoot(0);
         }
 
@@ -120,7 +112,7 @@ public class ActiveRoot : MonoBehaviour {
 
     void EndRoot(int nutrientCount) {
         // Snapping the root to where the collider landed looks more natural
-        stem.SetPosition(stem.positionCount - 1, circleCollider.transform.position);
+        stem.SetPosition(stem.positionCount-1, circleCollider.transform.position);
 
         // Before destroying this root's controller, we create a copy static root
         GameObject plantedRoot = Instantiate(RootMinigameManager.Instance.plantedRootPrefab, transform.position, Quaternion.identity);
@@ -156,7 +148,7 @@ public class ActiveRoot : MonoBehaviour {
     }
 
     public void RefreshStemStrengthVisual() {
-        float newScaleFactor = 1f - (strain / 4f);
+        float newScaleFactor = 1f - (strain / 5f);
         transform.localScale = new Vector3(newScaleFactor, newScaleFactor, newScaleFactor);
         UpdateColor(new Color(strain / 3f, 1f, 0f));
         stem.endWidth = 0.25f - (strain / 22f);

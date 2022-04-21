@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class FlowerRow : MonoBehaviour {
     public SpriteRenderer highlightSprite;
+    public SpriteRenderer rowAvailableSprite;
     public int slotNumber;
     public GameObject flowerTestPrefab;
     [HideInInspector] public float flashingAnimation = 0f;
@@ -15,36 +16,47 @@ public class FlowerRow : MonoBehaviour {
     [HideInInspector] public List<GameObject> overworldFlowerObjects;
     private bool finished = false;
 
+
     void Awake() {
         highlightSprite.enabled = false;
         GenerateOverworldFlowers();
     }
 
     void Update() {
-        // Causes the highlight selector graphic to flash red so players have an easier time seeing it
-        if (highlightSprite.enabled) {
-            flashingAnimation += Time.deltaTime * 4f;
-            Color flashingColor = highlightSprite.color;
-            flashingColor.g = Mathf.Abs(Mathf.Sin(flashingAnimation));
-            flashingColor.b = Mathf.Abs(Mathf.Sin(flashingAnimation));
-            highlightSprite.color = flashingColor;
+        if (rowAvailableSprite.enabled) {
+            flashingAnimation += Time.deltaTime * 2f;
+
+            // Plots of land with nutrients still available have a yellow glow that fades in and out
+            Color rowAvailableColor = rowAvailableSprite.color;
+            rowAvailableColor.a = Mathf.Abs(Mathf.Sin(flashingAnimation)) * 0.25f;
+            rowAvailableSprite.color = rowAvailableColor;
+
+            // Causes the highlight selector graphic to flash red so players have an easier time seeing it
+            if (highlightSprite.enabled) {
+                Color flashingColor = highlightSprite.color;
+                flashingColor.g = Mathf.Abs(Mathf.Sin(flashingAnimation));
+                flashingColor.b = Mathf.Abs(Mathf.Sin(flashingAnimation));
+                highlightSprite.color = flashingColor;
+            }
         }
     }
 
     void OnMouseDown() {
-        if (finished) return;
+        if (finished || OverworldManager.Instance.fadeOutAnimation != 0f) return;
         // When exiting the minigame, the player will be next to it on the pathway to their house
         if (PauseMenu.Instance) PauseMenu.Instance.playerPosition = new Vector3(-0.715f, transform.position.y, 0f); ;
 
         // Go to alternate scene, loading this specified row
         RootMinigameManager.currentSlot = slotNumber;
-        SceneManager.LoadScene("RootMinigame");
+
+        OverworldManager.Instance.cinematicCameraTarget = transform;
+        OverworldManager.Instance.TransitionToScene("RootMinigame");
+        // SceneManager.LoadScene("RootMinigame");
     }
 
     void OnMouseEnter() {
         if (finished) return;
         highlightSprite.enabled = true;
-        flashingAnimation = 1f;
     }
 
     void OnMouseExit() {
@@ -59,7 +71,6 @@ public class FlowerRow : MonoBehaviour {
 
         string path = Application.persistentDataPath + "/roots" + slotNumber + ".dat";
         if (File.Exists(path)) {
-            finished = true;
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(path, FileMode.Open);
             if (stream.Length != 0) {
@@ -70,6 +81,7 @@ public class FlowerRow : MonoBehaviour {
                 Vector3[] coordinates = new Vector3[data.xCoordinates.Length];
                 int[] nutrientCount = data.nutrientCount;
                 int[] colorIndex = data.colorIndex;
+
                 for (int i = 0; i < coordinates.Length; i++) {
                     coordinates[i] = new Vector3(data.xCoordinates[i], data.yCoordinates[i], 0f);
                 }
@@ -104,6 +116,15 @@ public class FlowerRow : MonoBehaviour {
                         runningIndex++;
                     }
                 }
+
+                // Check if there are any nutrients left. If not, mark this plot as finished
+                finished = true;
+                bool[] nutrientsAvailable = data.nutrientsEnabled;
+                foreach(bool na in nutrientsAvailable) {
+                    if (na == true) finished = false;
+                }
+
+                rowAvailableSprite.enabled = !finished;
             }
         }
     }
