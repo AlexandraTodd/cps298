@@ -41,7 +41,7 @@ public class RootMinigameManager : MonoBehaviour {
     }
 
     private IEnumerator ExitWait() {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
         SceneManager.LoadScene("TownMap");
     }
 
@@ -125,6 +125,13 @@ public class RootMinigameManager : MonoBehaviour {
 
             SaveRoots();
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        // Exit
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            // Erase progress so we start from new next time
+            File.Delete(Application.persistentDataPath + "/roots"+currentSlot+".dat");
+            SceneManager.LoadScene("TownMap");
         }
     }
 

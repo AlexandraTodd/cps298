@@ -13,6 +13,7 @@ public class FlowerRow : MonoBehaviour {
     [HideInInspector] public float flashingAnimation = 0f;
 
     [HideInInspector] public List<GameObject> overworldFlowerObjects;
+    private bool finished = false;
 
     void Awake() {
         highlightSprite.enabled = false;
@@ -31,6 +32,7 @@ public class FlowerRow : MonoBehaviour {
     }
 
     void OnMouseDown() {
+        if (finished) return;
         // When exiting the minigame, the player will be next to it on the pathway to their house
         if (PauseMenu.Instance) PauseMenu.Instance.playerPosition = new Vector3(-0.715f, transform.position.y, 0f); ;
 
@@ -40,11 +42,13 @@ public class FlowerRow : MonoBehaviour {
     }
 
     void OnMouseEnter() {
+        if (finished) return;
         highlightSprite.enabled = true;
         flashingAnimation = 1f;
     }
 
     void OnMouseExit() {
+        if (finished) return;
         highlightSprite.enabled = false;
     }
 
@@ -55,6 +59,7 @@ public class FlowerRow : MonoBehaviour {
 
         string path = Application.persistentDataPath + "/roots" + slotNumber + ".dat";
         if (File.Exists(path)) {
+            finished = true;
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(path, FileMode.Open);
             if (stream.Length != 0) {

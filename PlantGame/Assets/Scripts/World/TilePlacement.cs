@@ -69,7 +69,6 @@ public class TilePlacement : MonoBehaviour
                     if (palsize >= 255) throw new InternalBufferOverflowException("Too many tiles in the map!");
                     idx = palsize++;
                     palette[idx] = sprite.name;
-                    Debug.Log(sprite.name);
                 }
                 map[y, x] = (byte)idx;
             }
