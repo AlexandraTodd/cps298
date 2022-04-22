@@ -41,8 +41,25 @@ public class RootMinigameManager : MonoBehaviour {
     public GameObject placeholderSeedList;
     public GameObject placeholderSeedPrefab;
 
+    public AudioSource soundEffects;
+    public AudioClip sound_rootbegin;
+    public AudioClip sound_rootsnap;
+    public AudioClip sound_collidewithaquifer;
+    public AudioClip sound_collidewithrock;
+    public AudioClip sound_collidewithroot;
+
+    [HideInInspector] public Color defaultRootColor = new Color(0.7f, 0.6f, 0.6f, 1f);
+    [HideInInspector] public Color deadRootColor = new Color(0.1226415f, 0.04338733f, 0.04338733f, 1f);
+    [HideInInspector] public Color[,] rootStartColors = new Color[12,3];
+
+    [HideInInspector] public Color defaultCameraColor;
+    [HideInInspector] public bool rootWasSuccessful = false;
+
     void Awake() {
         Instance = this;
+
+        // Stores camera color
+        defaultCameraColor = defaultCamera.backgroundColor;
 
         // Opening fade in animation
         cursorImage.enabled = false;
@@ -58,13 +75,75 @@ public class RootMinigameManager : MonoBehaviour {
             newSeedDrag.GetComponent<PlaceholderSeedDrag>().SetColor(i);
         }
 
+        // Written in code rather than the Unity interface so that we can color code key words
         instructionPromptText.text = "Guide the flowers' roots to the nutrients and water they need!\n\n• Use your mouse to click on and drag a seed from the menu on the left onto the planter."
             + "\n\n• A root will then emerge and follow your mouse. Guide it into one or more " + $"{"nutrients".AddColor(new Color(0.6f, 0.4f, 0f, 1f))}" + " before completing it by reaching a source of "
             + $"{"water".AddColor(new Color(0f, 0.75f, 1f, 1f))}" + "."
             + "\n\n• Avoid colliding with " + $"{"rocks".AddColor(Color.black)}" + " or other roots - this will break your root!"
-            +"\n\n• Roots thin out the more they travel upward and eventually die.";
+            +"\n\n• Roots thin out the more they bend upward and will eventually break. Try to stay moving downward when possible.";
 
         LoadPlantMinigameProgress();
+
+        // Establish root color combinations
+        // Red
+        rootStartColors[0, 0] = new Color(0.99f, 0.39f, 0.39f);
+        rootStartColors[0, 1] = new Color(0.99f, 0.01f, 0.01f);
+        rootStartColors[0, 2] = new Color(0.5f, 0.01f, 0.01f);
+
+        // Red-Orange
+        rootStartColors[1, 0] = new Color(0.99f, 0.6f, 0.39f);
+        rootStartColors[1, 1] = new Color(0.99f, 0.4f, 0.01f);
+        rootStartColors[1, 2] = new Color(0.5f, 0.2f, 0.01f);
+
+        // Orange
+        rootStartColors[2, 0] = new Color(0.99f, 0.8f, 0.39f);
+        rootStartColors[2, 1] = new Color(0.99f, 0.6f, 0.01f);
+        rootStartColors[2, 2] = new Color(0.5f, 0.3f, 0.01f);
+
+        // Yellow-Orange
+        rootStartColors[3, 0] = new Color(0.99f, 0.91f, 0.56f);
+        rootStartColors[3, 1] = new Color(0.99f, 0.8f, 0.01f);
+        rootStartColors[3, 2] = new Color(0.5f, 0.4f, 0.01f);
+
+        // Yellow
+        rootStartColors[4, 0] = new Color(0.99f, 0.99f, 0.59f);
+        rootStartColors[4, 1] = new Color(0.99f, 0.99f, 0.01f);
+        rootStartColors[4, 2] = new Color(0.5f, 0.5f, 0.01f);
+
+        // Yellow-Green
+        rootStartColors[5, 0] = new Color(0.4f, 0.8f, 0.39f);
+        rootStartColors[5, 1] = new Color(0.4f, 0.8f, 0.01f);
+        rootStartColors[5, 2] = new Color(0.2f, 0.4f, 0.01f);
+
+        // Green
+        rootStartColors[6, 0] = new Color(0.39f, 0.6f, 0.39f);
+        rootStartColors[6, 1] = new Color(0.01f, 0.6f, 0.01f);
+        rootStartColors[6, 2] = new Color(0.01f, 0.3f, 0.01f);
+
+        // Blue-Green
+        rootStartColors[7, 0] = new Color(0.44f, 0.71f, 0.73f);
+        rootStartColors[7, 1] = new Color(0.04f, 0.71f, 0.76f);
+        rootStartColors[7, 2] = new Color(0.02f, 0.35f, 0.38f);
+
+        // Blue
+        rootStartColors[8, 0] = new Color(0.32f, 0.51f, 0.81f);
+        rootStartColors[8, 1] = new Color(0.01f, 0.32f, 0.83f);
+        rootStartColors[8, 2] = new Color(0.01f, 0.16f, 0.42f);
+
+        // Blue-Purple
+        rootStartColors[9, 0] = new Color(0.4f, 0.39f, 0.6f);
+        rootStartColors[9, 1] = new Color(0.4f, 0.01f, 0.6f);
+        rootStartColors[9, 2] = new Color(0.2f, 0.01f, 0.3f);
+
+        // Purple
+        rootStartColors[10, 0] = new Color(0.6f, 0.39f, 0.6f);
+        rootStartColors[10, 1] = new Color(0.6f, 0.01f, 0.6f);
+        rootStartColors[10, 2] = new Color(0.3f, 0.01f, 0.3f);
+
+        // Red-Purple
+        rootStartColors[10, 0] = new Color(0.8f, 0.39f, 0.6f);
+        rootStartColors[10, 1] = new Color(0.8f, 0.01f, 0.6f);
+        rootStartColors[10, 2] = new Color(0.4f, 0.01f, 0.3f);
     }
 
     private IEnumerator PauseWait() {
@@ -114,8 +193,20 @@ public class RootMinigameManager : MonoBehaviour {
 
         // No active root
         if (activeRoot == null) {
-            // postDeathDelay 
             delayBeforeReturnToDefaultView = Mathf.Max(0f, delayBeforeReturnToDefaultView - Time.deltaTime);
+
+            // Prevent this color flashing during the fadeout sequence
+            if (fadeOutAnimation == 0f) {
+                // Background flashes a color to indicate success or failure
+                if (!rootWasSuccessful) {
+                    Color flashRedColor = new Color(Mathf.Max(delayBeforeReturnToDefaultView, defaultCameraColor.r), Mathf.Min(1f - delayBeforeReturnToDefaultView, defaultCameraColor.g), Mathf.Min(1f - delayBeforeReturnToDefaultView, defaultCameraColor.b), 1f);
+                    defaultCamera.backgroundColor = flashRedColor;
+                } else {
+                    Color flashAquiferColor = new Color(Mathf.Min(1f - delayBeforeReturnToDefaultView, defaultCameraColor.r), Mathf.Max(delayBeforeReturnToDefaultView * 0.75f, defaultCameraColor.g), Mathf.Max(delayBeforeReturnToDefaultView, defaultCameraColor.b), 1f);
+                    defaultCamera.backgroundColor = flashAquiferColor;
+                }
+            }
+
             if (delayBeforeReturnToDefaultView == 0f) {
                 if (fadeInAnimation == 0f) {
                     exitMinigameButton.SetActive(true);
@@ -164,10 +255,12 @@ public class RootMinigameManager : MonoBehaviour {
                         if (Input.GetMouseButtonUp(0)) {
                             // Creates the root
                             GameObject newRoot = Instantiate(activeRootPrefab, new Vector2(spawnPointer.transform.position.x, 0f), Quaternion.Euler(new Vector3(0f, 0f, 270f)));
+                            soundEffects.PlayOneShot(sound_rootbegin);
                             exitMinigameButton.SetActive(false);
                             placeholderSeedList.SetActive(false);
                             activeRoot = newRoot.GetComponent<ActiveRoot>();
                             activeRoot.colorIndex = cursorGrabbed;
+                            activeRoot.stem.startColor = defaultRootColor;
                             activeRoot.manager = this;
                             spawnPointer.SetActive(false);
 

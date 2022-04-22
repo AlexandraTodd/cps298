@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Items\Seed.cs" />
+    <Compile Include="Assets\Scripts\RootMinigame\PlaceholderSeedDrag.cs" />
     <Compile Include="Assets\Scripts\ButtonInfo.cs" />
     <Compile Include="Assets\Scripts\World\WorldBorder.cs" />
     <Compile Include="Assets\Scripts\World\FlowerRow.cs" />
@@ -80,16 +81,16 @@
     <Compile Include="Assets\Scripts\ShopManagerScript.cs" />
     <Compile Include="Assets\Scripts\World\SoundRandomizer.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\RootMinigameManager.cs" />
+    <Compile Include="Assets\Scripts\World\OverworldManager.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\RootMinigameSave.cs" />
     <Compile Include="Assets\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\PlantedRoot.cs" />
+    <Compile Include="Assets\Scripts\StringExtensions.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\RootPointer.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\ActiveRoot.cs" />
     <Compile Include="Assets\Scripts\World\TileModifyTest.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\Aquifer.cs" />
-    <Compile Include="Assets\PlaceholderSeedDrag.cs" />
-    <Compile Include="Assets\Scripts\StringExtensions.cs" />
-    <Compile Include="Assets\OverworldManager.cs" />
+    <Compile Include="Assets\Scripts\MainMenuDummyRoot.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

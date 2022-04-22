@@ -6,12 +6,13 @@ using TMPro;
 
 public class ActiveRoot : MonoBehaviour {
     [HideInInspector] public float generatePointTimer = 0f;
-    [HideInInspector] public float speed = 500f;
+    [HideInInspector] public float speed = 600f;
 
     [HideInInspector] public Vector2 target;
     public LayerMask obstacleMask;
 
     public SpriteRenderer[] tieredPointers;
+    public AudioSource bendingSound;
 
     [HideInInspector] public SpriteRenderer currentPointer;
     public CircleCollider2D circleCollider;
@@ -66,6 +67,7 @@ public class ActiveRoot : MonoBehaviour {
             for (int i = 1; i < pr.stem.positionCount; i++) {
                 if (Physics2D.Raycast(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1) - pr.stem.GetPosition(i), Vector2.Distance(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1)), (1 << 9))) {
                     Debug.Log("Collided with pre-existing root");
+                    RootMinigameManager.Instance.soundEffects.PlayOneShot(RootMinigameManager.Instance.sound_collidewithroot);
                     rootCollided = true;
                 }
             }
@@ -75,6 +77,7 @@ public class ActiveRoot : MonoBehaviour {
         for (int i = 1; i < stem.positionCount; i++) {
             if (Physics2D.Raycast(stem.GetPosition(i), stem.GetPosition(i - 1) - stem.GetPosition(i), Vector2.Distance(stem.GetPosition(i), stem.GetPosition(i - 1)), (1 << 9))) {
                 Debug.Log("Collided with own root");
+                RootMinigameManager.Instance.soundEffects.PlayOneShot(RootMinigameManager.Instance.sound_collidewithroot);
                 rootCollided = true;
             }
         }
@@ -90,8 +93,18 @@ public class ActiveRoot : MonoBehaviour {
             float difference = Mathf.Abs(90f - testAngle);
 
             strain += (Time.deltaTime * 0.02f * (90f - difference));
+
+            // Bending sound that gets higher and higher pitch the closer the root is to breaking from tension
+            if (!bendingSound.isPlaying) bendingSound.Play();
+            bendingSound.volume = 0.4f + ((strain / 4f) * 0.6f);
+            bendingSound.pitch = 0.5f + (strain * 2f);
+
+            // Fades to yellow when straining, more rapidly the higher strained it is
+            UpdateColor(new Color(Mathf.Lerp(stem.endColor.r, 1f, strain / 4f), 1f, 0f));
+
+            // Refreshes size
             RefreshStemStrengthVisual();
-        }
+        } else UpdateColor(new Color(Mathf.Lerp(stem.endColor.r, 0f, Time.deltaTime * 0.5f), 1f, 0f));
 
         if (strain >= 4f) {
             Debug.Log("Strained");
@@ -102,6 +115,7 @@ public class ActiveRoot : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Collision")) {
             Debug.Log("Collided with obstacle");
+            RootMinigameManager.Instance.soundEffects.PlayOneShot(RootMinigameManager.Instance.sound_collidewithrock);
             EndRoot(0);
         }
 
@@ -122,14 +136,20 @@ public class ActiveRoot : MonoBehaviour {
         stem.GetPositions(positionCopy);
         plantedRootDetail.stem.SetPositions(positionCopy);
         plantedRootDetail.stem.startColor = stem.startColor;
-        plantedRootDetail.stem.endColor = stem.endColor;
+        plantedRootDetail.stem.endColor = Color.green;
         plantedRootDetail.stem.endWidth = stem.endWidth;
         plantedRootDetail.colorIndex = colorIndex;
         plantedRootDetail.nutrientCount = nutrientCount;
 
         if (nutrientCount == 0) {
-            plantedRootDetail.stem.startColor = Color.red;
-            plantedRootDetail.stem.endColor = Color.red;
+            RootMinigameManager.Instance.soundEffects.PlayOneShot(RootMinigameManager.Instance.sound_rootsnap);
+            plantedRootDetail.stem.startWidth = stem.startWidth;
+            plantedRootDetail.stem.startColor = RootMinigameManager.Instance.deadRootColor;
+            plantedRootDetail.stem.endColor = RootMinigameManager.Instance.deadRootColor;
+            RootMinigameManager.Instance.rootWasSuccessful = false;
+        } else {
+            RootMinigameManager.Instance.soundEffects.PlayOneShot(RootMinigameManager.Instance.sound_collidewithaquifer);
+            RootMinigameManager.Instance.rootWasSuccessful = true;
         }
 
         RootMinigameManager.Instance.plantedRoots.Add(plantedRootDetail);
@@ -145,12 +165,14 @@ public class ActiveRoot : MonoBehaviour {
             if (currentPointer != pointer) pointer.enabled = false;
             else pointer.enabled = true;
         }
+
+        stem.startColor = RootMinigameManager.Instance.rootStartColors[colorIndex, nutrientCount - 1];
+        UpdateColor(Color.green);
     }
 
     public void RefreshStemStrengthVisual() {
         float newScaleFactor = 1f - (strain / 5f);
         transform.localScale = new Vector3(newScaleFactor, newScaleFactor, newScaleFactor);
-        UpdateColor(new Color(strain / 3f, 1f, 0f));
         stem.endWidth = 0.25f - (strain / 22f);
     }
 
