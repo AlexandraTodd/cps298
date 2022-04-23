@@ -78,6 +78,30 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    public void Buy(Item itemData)
+    {
+        items[getItemNumber(itemData)].Buy();
+        if (onItemChangedCallback != null)
+        {
+            onItemChangedCallback.Invoke();
+        }
+    }
+    public void Sell(Item itemData)
+    {
+        if (items[getItemNumber(itemData)].stackSize > 0)
+        {
+            items[getItemNumber(itemData)].Sell();
+        }
+        else
+        {
+            Debug.Log("No " + itemData.name + " to remove.");
+        }
+        if (onItemChangedCallback != null)
+        {
+            onItemChangedCallback.Invoke();
+        }
+    }
+
 
     private List<Item> generateItemList()   // change to if fresh save generate, else load list
     {
