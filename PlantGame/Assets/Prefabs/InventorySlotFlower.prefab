@@ -279,7 +279,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5159492366797681200}
         m_TargetAssemblyTypeName: InventorySlot, Assembly-CSharp
-        m_MethodName: UseItem
+        m_MethodName: BuyButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

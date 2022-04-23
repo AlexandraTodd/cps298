@@ -27,7 +27,7 @@ public class Inventory : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))  // for testing, can be removed
         {
             Flower test = Flower.CreateInstance(4, 1);
-            items[getItemNumber(test)].Buy();
+            Add(test);
             Flower test2 = Flower.CreateInstance(8, 2);
             Add(test2);
             Seed test3 = Seed.CreateInstance(10);
@@ -40,7 +40,7 @@ public class Inventory : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))  // for testing, can be removed
         {
             Flower test = Flower.CreateInstance(4, 1);
-            items[getItemNumber(test)].Sell();
+            Remove(test);
             Seed test4 = Seed.CreateInstance(5);
             Remove(test4);
         }
