@@ -16,83 +16,64 @@ public class Inventory : MonoBehaviour
             return;
         }
         instance = this;
-        itemDictionary = new Dictionary<string, InventorySlot>();
-        items = new List<InventorySlot>();
+        items = new List<Item>();
+        items = generateItemList();
+        currency = generateCurrency();
     }
     #endregion
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D))  // for testing, can be removed
         {
             Flower test = Flower.CreateInstance(4, 1);
-            Add(test);
+            items[getItemNumber(test)].Buy();
             Flower test2 = Flower.CreateInstance(8, 2);
             Add(test2);
             Seed test3 = Seed.CreateInstance(10);
             Add(test3);
             Seed test4 = Seed.CreateInstance(5);
             Add(test4);
+            Flower test5 = Flower.CreateInstance(9, 0);
+            Add(test5);
         }
-    }
-
-    public InventorySlot Get(Item itemData)
-    {
-        if (itemDictionary.TryGetValue(itemData.name, out InventorySlot value))
+        if (Input.GetKeyDown(KeyCode.F))  // for testing, can be removed
         {
-            return value;
+            Flower test = Flower.CreateInstance(4, 1);
+            items[getItemNumber(test)].Sell();
+            Seed test4 = Seed.CreateInstance(5);
+            Remove(test4);
         }
-        return null;
-    }
+        }
 
     public delegate void OnItemChanged();
-    public OnItemChanged onItemChangedCallback;  // Trigger
-    private Dictionary<string, InventorySlot> itemDictionary;   // testing
-    public List<InventorySlot> items { get; private set; }
-    //public Currency money;   // testing
+    public OnItemChanged onItemChangedCallback;
+    public List<Item> items;
+    private int colorCount = 12;
+    private int shadeCount = 3;
+    private int currencyStartingAmount = 25;
+    private int currency;
 
     public void Add(Item itemData)
     {
-        if (itemDictionary.TryGetValue(itemData.name, out InventorySlot value))
+        if(items[getItemNumber(itemData)].stackSize > 0)
         {
-            value.AddToStack();
-            Debug.Log(itemData.name + " stack size: " + value.stackSize);
+            items[getItemNumber(itemData)].AddToStack();
         }
         else
         {
-            //GameObject newInstance = Instantiate(InventoryUI.Instance.inventorySlotPrefab);
-            //InventorySlot newSlot = newInstance.AddComponent<InventorySlot>();
-            //newSlot.AddItem(itemData);
-
-            // Note from Drake: For Unity, GameObjects are created in-game using static method Instantiate rather than made a new class object
-            // InventorySlot newSlot = new InventorySlot(itemData);
-
-            // Rather than creating a new class with the itemData as a parameter, we're going to Instantiate it in Unity and then call a method to update it
-            // with the itemData as a parameter instead
-
-            GameObject newSlotObject = Instantiate(inventorySlotPrefab, transform.position, Quaternion.identity);
-            InventorySlot newInventorySlot = newSlotObject.GetComponent<InventorySlot>();
-            newInventorySlot.Configure(itemData);
-            Debug.Log("Adding " + newInventorySlot.item.name);
-            items.Add(newInventorySlot);
-            itemDictionary.Add(itemData.name, newInventorySlot);
+            items[getItemNumber(itemData)].AddToStack();
         }
         if (onItemChangedCallback != null)
         {
             onItemChangedCallback.Invoke();
         }
     }
-
     public void Remove(Item itemData)
     {
-        if (itemDictionary.TryGetValue(itemData.name, out InventorySlot value))
+        if (items[getItemNumber(itemData)].stackSize > 0)
         {
-            value.RemoveFromStack();
-            if (value.stackSize == 0)
-            {
-                value.ClearSlot();
-                itemDictionary.Remove(itemData.name);
-            }
+            items[getItemNumber(itemData)].RemoveFromStack();
         }
         else
         {
@@ -102,5 +83,56 @@ public class Inventory : MonoBehaviour
         {
             onItemChangedCallback.Invoke();
         }
+    }
+
+
+    private List<Item> generateItemList()   // change to if fresh save generate, else load list
+    {
+        int itemCount = 0;
+        List<Item> freshItemList = new List<Item>();
+        for (int c = 0; c < colorCount; c++) // c for color
+        {
+            for (int i = 0; i < shadeCount; i++) // i for intensity
+            {
+                freshItemList.Add(Flower.CreateInstance(c, i, itemCount));
+                itemCount++;
+            }
+        }
+        for (int c = 0; c < colorCount; c++) // c for color
+        {
+            freshItemList.Add(Seed.CreateInstance(c, itemCount));
+            itemCount++;
+        }
+        return freshItemList;
+    }
+    public int getItemNumber(Item itemSet)
+    {
+        if (itemSet.itemType == 0)
+        {
+            return (itemSet.color * shadeCount - 1) + itemSet.intensity + 1;
+        }
+        else
+        {
+            return itemSet.color + (colorCount * shadeCount - 1);
+        }
+    }
+
+    private int generateCurrency()   // generate on fresh save, load otherwise
+    {
+        return currencyStartingAmount;
+    }
+    public void addCurrency(int currencyInc)
+    {
+        currency += currencyInc;
+        Debug.Log("Currency total incremented to: " + currency);
+    }
+    public void removeCurrency(int currencyDec)
+    {
+        currency -= currencyDec;
+        Debug.Log("Currency total decremented to: " + currency);
+    }
+    public int getCurrency()
+    {
+        return currency;
     }
 }

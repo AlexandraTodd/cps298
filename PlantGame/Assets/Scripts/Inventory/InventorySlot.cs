@@ -10,80 +10,25 @@ public class InventorySlot : MonoBehaviour
     public Text stackSizeText;
     private string itemNameString;
     public Text itemNameText;
-    //public Material itemMaterial;
 
-    // Note from Drake:
-    // This does not get used. Instantiating Unity MonoBehaviour objects behave differently than creating instances of classes and use Awake()/Start() instead
-    /*
-    public InventorySlot(Item newItem)
+    public void LoadSlot(Item content)
     {
-        item = newItem;
-        stackSize = 1;
-        string stackSizeString = stackSize.ToString();
-        //Text newText = InventoryUI.Instance.GetComponent<Text>();
-        //Debug.Log(newText);
-        //stackSizeText = newText;
-        //stackSizeText.text = stackSizeString;
-        //stackSizeText.GetComponent<Text>().text = stackSizeString;
-        //stackSizeText = GetComponent<UnityEngine.UI.Text>();
-
-        //InventoryUI.go.AddComponent<Text>();
-        //stackSizeText = InventoryUI.go.GetComponent<Text>();
-        //stackSizeText.text = stackSize.ToString();
-
-        // Note from Drake: For Unity, GameObjects are created in-game using static method Instantiate rather than made a new class object
-        // GameObject go = new GameObject();
-
-        // GameObject go = Instantiate()
-        // stackSizeText = go.GetComponent<Text>();
-        stackSizeText.text = stackSize.ToString();
-    }
-    */
-
-    public void Configure(Item itemData) {
-        item = itemData;
-        stackSize = 1;
-        stackSizeString = stackSize.ToString();
-        itemNameString = item.name;
-    }
-
-    public void AddSlot(InventorySlot newSlot)
-    {
-        item = newSlot.item;
+        item = content;
         Icon.enabled = true;
-        Icon.material = 
-        stackSize = newSlot.stackSize;
-        stackSizeText.text = newSlot.stackSizeString;
-        itemNameText.text = newSlot.itemNameString;
-    }
-
-    public void AddToStack()   // testing
-    {
-        stackSize++;
-        stackSizeString = stackSize.ToString();
-        stackSizeText.text = stackSizeString;
-    }
-
-    public void RemoveFromStack()   // testing
-    {
-        stackSize--;
-        stackSizeString = stackSize.ToString();
-        stackSizeText.text = stackSizeString;
+        Material clonedMaterial = new Material(Icon.material);
+        Icon.material = clonedMaterial;
+        Icon.material.SetInt("inputColor", item.color);
+        Icon.material.SetInt("inputIntensity", item.intensity);
+        stackSize = content.stackSize;
+        stackSizeText.text = content.stackSize.ToString();
+        itemNameText.text = content.name;
     }
 
     public void ClearSlot ()
     {
         item = null;
         Icon.enabled = false;
-        //stackSizeText.enabled = false;
-    }
-
-    public void UseItem ()  // shouldn't be in here, should go thru inventory.remove
-    {
-        if (item != null)
-        {
-            item.Use();
-            RemoveFromStack();   // testing
-        }
+        stackSizeText.text = "";
+        itemNameText.text = "";
     }
 }

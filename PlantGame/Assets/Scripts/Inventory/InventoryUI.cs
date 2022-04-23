@@ -10,7 +10,6 @@ public class InventoryUI : MonoBehaviour
     Inventory inventory;
     public InventorySlot[] FlowerSlots;
     public InventorySlot[] SeedSlots;
-    //public GameObject inventorySlotPrefab;
 
     void Start()
     {
@@ -18,7 +17,7 @@ public class InventoryUI : MonoBehaviour
         inventory.onItemChangedCallback += UpdateUI;
         FlowerSlots = FlowerItemsParent.GetComponentsInChildren<InventorySlot>();
         SeedSlots = SeedItemsParent.GetComponentsInChildren<InventorySlot>();
-        FlowerInventoryUI.SetActive(true);    // testing
+        SeedInventoryUI.SetActive(true);
         UpdateUI();
     }
 
@@ -33,15 +32,21 @@ public class InventoryUI : MonoBehaviour
         int seeds = 0;
         for (int i = 0;  i < inventory.items.Count; i++)
         {
-            if(inventory.items[i].item.itemType == 0)
+            if(inventory.items[i].itemType == 0)
             {
-                FlowerSlots[flowers].AddSlot(inventory.items[i]);
-                flowers++;
+                if (inventory.items[i].stackSize > 0) // comment out this if statement and you can see all flowers in inventory to assess color
+                {
+                    FlowerSlots[flowers].LoadSlot(inventory.items[i]);
+                    flowers++;
+                }
             }
             else
             {
-                SeedSlots[seeds].AddSlot(inventory.items[i]);
-                seeds++;
+                if (inventory.items[i].stackSize > 0) // comment out this if statement and you can see all seeds in inventory to assess color
+                {
+                    SeedSlots[seeds].LoadSlot(inventory.items[i]);
+                    seeds++;
+                }
             }
         }
 
@@ -54,7 +59,5 @@ public class InventoryUI : MonoBehaviour
         {
             SeedSlots[i].ClearSlot();
         }
-
-        Debug.Log("Updating UI");
     }
 }

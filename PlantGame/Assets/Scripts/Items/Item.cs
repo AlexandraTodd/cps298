@@ -1,31 +1,46 @@
 using UnityEngine;
 
-//[CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
 public class Item : ScriptableObject
 {
+    public int id;
     new public string name = "New Item";
-    public Sprite icon;  // seed or flower
+    public Sprite icon;
     public int color = 0;
+    public int intensity = 2;
     public int price = 1;
     public bool showInInventory = true;
     public int itemType = 0;
+    public int stackSize = 0;
+
+    public void AddToStack()
+    {
+        stackSize++;
+    }
+
+    public void RemoveFromStack()
+    {
+        stackSize--;
+    }
 
     public virtual void Use ()
     {
         Debug.Log("Using " + name);
+        RemoveFromStack();
+
     }
 
-    public void Sell ()
+    public void Sell()
     {
         Debug.Log("Selling " + name);
-        // add price to currency
-        // money.gain(price);
-        RemoveFromInventory();
+        Inventory.instance.addCurrency(this.price);
+        RemoveFromStack();
     }
 
-    public void RemoveFromInventory ()
+    public void Buy()
     {
-        Inventory.instance.Remove(this);
+        Debug.Log("Buying " + name);
+        Inventory.instance.removeCurrency(this.price);
+        AddToStack();
     }
 
     public string colorToString(int colorInt)
@@ -61,16 +76,16 @@ public class Item : ScriptableObject
         }
     }
 
-    public string intensityToString(int intensityInt)
+    public string intensityToString(int intensityInt)  // change shader ?
     {
         switch(intensityInt)
         {
             case 0:
-                return "Pastel";
+                return "Dark";
             case 1:
                 return "Bright";
             case 2:
-                return "Dark";
+                return "Pastel";
             default:
                 return "Unknown Intensity";
         }
