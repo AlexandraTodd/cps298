@@ -306,7 +306,7 @@ AudioSource:
   m_GameObject: {fileID: 263954639}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: a246d7dab2922b34a8ac2b66ffcf107f, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.21
@@ -604,7 +604,7 @@ AudioSource:
   m_GameObject: {fileID: 617142668}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 58d18ff2ff327ef4081cf9772d49ed3a, type: 2}
   m_audioClip: {fileID: 8300000, guid: 93e5d27e5ab571817a8cbf7448abacd9, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -704,6 +704,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeOutAnimation: 0
+  fadeInAnimation: 0
   controllingCamera: 0
   music: {fileID: 617142669}
   lowPassFilter: {fileID: 617142672}

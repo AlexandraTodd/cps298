@@ -6,13 +6,14 @@ using TMPro;
 
 public class ActiveRoot : MonoBehaviour {
     [HideInInspector] public float generatePointTimer = 0f;
-    [HideInInspector] public float speed = 600f;
+    [HideInInspector] public float speed = 500f;
 
     [HideInInspector] public Vector2 target;
     public LayerMask obstacleMask;
 
     public SpriteRenderer[] tieredPointers;
     public AudioSource bendingSound;
+    public AudioSource nutrientGrabSound;
 
     [HideInInspector] public SpriteRenderer currentPointer;
     public CircleCollider2D circleCollider;
@@ -97,10 +98,10 @@ public class ActiveRoot : MonoBehaviour {
             // Bending sound that gets higher and higher pitch the closer the root is to breaking from tension
             if (!bendingSound.isPlaying) bendingSound.Play();
             bendingSound.volume = 0.4f + ((strain / 4f) * 0.6f);
-            bendingSound.pitch = 0.5f + (strain * 2f);
+            bendingSound.pitch = 0.7f + (strain * 2f);
 
             // Fades to yellow when straining, more rapidly the higher strained it is
-            UpdateColor(new Color(Mathf.Lerp(stem.endColor.r, 1f, strain / 4f), 1f, 0f));
+            UpdateColor(new Color(Mathf.Lerp(stem.endColor.r, 1f, strain / 7f), 1f, 0f));
 
             // Refreshes size
             RefreshStemStrengthVisual();
@@ -159,6 +160,27 @@ public class ActiveRoot : MonoBehaviour {
     }
 
     public void AddNutrient() {
+        // Grabbing a nutrient cures strain
+        strain = 0f;
+        UpdateColor(Color.green);
+        RefreshStemStrengthVisual();
+
+        // Sound and visual effects
+        if (nutrientCount < 3) {
+            RootMinigameManager.Instance.nutrientGrabbedFlash = 0.75f;
+            nutrientGrabSound.pitch = 0.75f + (0.5f * nutrientCount);
+        } else {
+            RootMinigameManager.Instance.nutrientGrabbedFlash = 0.35f;
+            nutrientGrabSound.pitch = 0.5f;
+        }
+
+        // Play sound regardless of nutrient count
+        nutrientGrabSound.Play();
+
+        // Cancel incrementing if it wouldn't do anything
+        if (nutrientCount >= 3) return;
+
+        speed += 150f;
         nutrientCount++;
         currentPointer = tieredPointers[nutrientCount];
         foreach (SpriteRenderer pointer in tieredPointers) {
@@ -167,7 +189,6 @@ public class ActiveRoot : MonoBehaviour {
         }
 
         stem.startColor = RootMinigameManager.Instance.rootStartColors[colorIndex, nutrientCount - 1];
-        UpdateColor(Color.green);
     }
 
     public void RefreshStemStrengthVisual() {

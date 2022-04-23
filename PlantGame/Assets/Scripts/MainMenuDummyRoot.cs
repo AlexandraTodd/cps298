@@ -20,7 +20,7 @@ public class MainMenuDummyRoot : MonoBehaviour {
 
     private void Awake() {
         stem = GetComponent<LineRenderer>();
-        stem.SetPosition(0, new Vector3(transform.position.x, transform.position.y + 16, 0f));
+        stem.SetPosition(0, new Vector3(transform.position.x, transform.position.y + 1000, 0f));
         stem.SetPosition(1, transform.position);
 
         target = transform.position + (transform.right * speed * Time.deltaTime);

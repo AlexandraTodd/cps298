@@ -70,6 +70,7 @@
     <Compile Include="Assets\FlowerScript.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\Nutrient.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\RootMinigameObstacle.cs" />
+    <Compile Include="Assets\Scripts\MainMenuDummyRoot.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventorySlot.cs" />
     <Compile Include="Assets\camera.cs" />
     <Compile Include="Assets\PlayerMovement.cs" />
@@ -90,7 +91,6 @@
     <Compile Include="Assets\Scripts\RootMinigame\ActiveRoot.cs" />
     <Compile Include="Assets\Scripts\World\TileModifyTest.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\Aquifer.cs" />
-    <Compile Include="Assets\Scripts\MainMenuDummyRoot.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

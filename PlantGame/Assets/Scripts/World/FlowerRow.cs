@@ -51,7 +51,6 @@ public class FlowerRow : MonoBehaviour {
 
         OverworldManager.Instance.cinematicCameraTarget = transform;
         OverworldManager.Instance.TransitionToScene("RootMinigame");
-        // SceneManager.LoadScene("RootMinigame");
     }
 
     void OnMouseEnter() {
@@ -83,11 +82,11 @@ public class FlowerRow : MonoBehaviour {
                 int[] colorIndex = data.colorIndex;
 
                 for (int i = 0; i < coordinates.Length; i++) {
-                    coordinates[i] = new Vector3(data.xCoordinates[i], data.yCoordinates[i], 0f);
+                    coordinates[i] = new Vector3(data.xCoordinates[i], 0f, 0f);
                 }
 
                 // Seeded randomization so its always consistent, if we decide to implement some variance
-                Random.InitState(slotNumber);
+                Random.InitState(data.generationSeed);
 
                 // Grabs the first point of each point per root in the coordinate list
                 int runningIndex = 0;
@@ -126,6 +125,8 @@ public class FlowerRow : MonoBehaviour {
 
                 rowAvailableSprite.enabled = !finished;
             }
+
+            stream.Close();
         }
     }
 }

@@ -55,6 +55,8 @@ public class RootMinigameManager : MonoBehaviour {
     [HideInInspector] public Color defaultCameraColor;
     [HideInInspector] public bool rootWasSuccessful = false;
 
+    [HideInInspector] public float nutrientGrabbedFlash = 0f;
+
     void Awake() {
         Instance = this;
 
@@ -144,6 +146,9 @@ public class RootMinigameManager : MonoBehaviour {
         rootStartColors[10, 0] = new Color(0.8f, 0.39f, 0.6f);
         rootStartColors[10, 1] = new Color(0.8f, 0.01f, 0.6f);
         rootStartColors[10, 2] = new Color(0.4f, 0.01f, 0.3f);
+
+        // Annoyingly enough, these need to be updated every scene change
+        PauseMenu.UpdateAudioPreference();
     }
 
     private IEnumerator PauseWait() {
@@ -189,6 +194,12 @@ public class RootMinigameManager : MonoBehaviour {
                 fadeAnimationOverlay.enabled = false;
                 instructionPrompt.SetActive(true);
             }
+        }
+
+        // Background flashes gold when picking up a nutrient
+        if (nutrientGrabbedFlash > 0f) {
+            nutrientGrabbedFlash = Mathf.Max(0f, nutrientGrabbedFlash - Time.deltaTime);
+            defaultCamera.backgroundColor = new Color(Mathf.Max(nutrientGrabbedFlash, defaultCameraColor.r), Mathf.Max(nutrientGrabbedFlash * 0.7f, defaultCameraColor.g), Mathf.Min(1f - nutrientGrabbedFlash, defaultCameraColor.b), 1f);
         }
 
         // No active root
@@ -289,7 +300,7 @@ public class RootMinigameManager : MonoBehaviour {
             delayBeforeReturnToDefaultView = 1f;
             defaultCamera.orthographicSize = Mathf.Lerp(defaultCamera.orthographicSize, 10f, Time.deltaTime * 16f);
             Vector3 activeRootPosition = activeRoot.transform.position;
-            defaultCamera.transform.position = Vector3.Lerp(defaultCamera.transform.position, new Vector3(activeRootPosition.x, activeRootPosition.y, -10f), Time.deltaTime * 16f);
+            defaultCamera.transform.position = Vector3.Lerp(defaultCamera.transform.position, new Vector3(activeRootPosition.x, activeRootPosition.y - (activeRoot.nutrientCount * 2f), -10f), Time.deltaTime * 8f);
 
             if (!paused) {
                 activeRoot.target = defaultCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -308,7 +319,7 @@ public class RootMinigameManager : MonoBehaviour {
         }
 
         // Exit
-        if (Input.GetKeyDown(KeyCode.Escape)) {
+        if (Input.GetKeyDown(KeyCode.Escape) && activeRoot == null && fadeOutAnimation == 0f) {
             InitiateExit();
         }
     }
@@ -407,7 +418,7 @@ public class RootMinigameManager : MonoBehaviour {
         }
 
         // Granularity: the more granular, there are more but smaller obstacles
-        float granularity = Mathf.Max(UnityEngine.Random.value, 0.2f);
+        float granularity = UnityEngine.Random.Range(0.2f, 1.2f);
 
         // Generate obstacles
         int numberOfObstacles = Mathf.RoundToInt(60f / granularity);
