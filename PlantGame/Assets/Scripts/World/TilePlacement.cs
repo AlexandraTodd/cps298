@@ -16,24 +16,27 @@ public class TilePlacement : MonoBehaviour
         TileBase[] spritemap = sprites.GetComponentInChildren<Tilemap>().GetTilesBlock(sprites.GetComponentInChildren<Tilemap>().cellBounds);
         Tile empty = null;
         foreach (Tile t in spritemap) if (t != null && t.name == "empty") {empty = t; break;}
-        FileStream stream = new FileStream(Application.persistentDataPath + "/field.dat", FileMode.Open);
-        if (!stream.CanRead) return;
-        using (BinaryReader reader = new BinaryReader(stream)) {
-            int width = reader.ReadUInt16(), height = reader.ReadUInt16();
-            int minX = reader.ReadInt16(), minY = reader.ReadInt16();
-            byte palsize = reader.ReadByte();
-            Tile[] palette = new Tile[palsize];
-            for (int i = 0; i < palsize; i++) {
-                string name = reader.ReadString();
-                bool found = false;
-                foreach (Tile t in spritemap) if (t != null && t.name == name) {found = true; palette[i] = t; break;}
-                if (!found) throw new InvalidDataException("Tile save file references tiles that do not exist");
-            }
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    byte b = reader.ReadByte();
-                    if (b != 0xFF) tilemap.SetTile(new Vector3Int(minX + x, minY + y, 0), palette[b]);
-                    else tilemap.SetTile(new Vector3Int(minX + x, minY + y, 0), empty);
+        string path = Application.persistentDataPath + "/field.dat";
+        if (File.Exists(path)) {
+            FileStream stream = new FileStream(path, FileMode.Open);
+            if (!stream.CanRead) return;
+            using (BinaryReader reader = new BinaryReader(stream)) {
+                int width = reader.ReadUInt16(), height = reader.ReadUInt16();
+                int minX = reader.ReadInt16(), minY = reader.ReadInt16();
+                byte palsize = reader.ReadByte();
+                Tile[] palette = new Tile[palsize];
+                for (int i = 0; i < palsize; i++) {
+                    string name = reader.ReadString();
+                    bool found = false;
+                    foreach (Tile t in spritemap) if (t != null && t.name == name) { found = true; palette[i] = t; break; }
+                    if (!found) throw new InvalidDataException("Tile save file references tiles that do not exist");
+                }
+                for (int y = 0; y < height; y++) {
+                    for (int x = 0; x < width; x++) {
+                        byte b = reader.ReadByte();
+                        if (b != 0xFF) tilemap.SetTile(new Vector3Int(minX + x, minY + y, 0), palette[b]);
+                        else tilemap.SetTile(new Vector3Int(minX + x, minY + y, 0), empty);
+                    }
                 }
             }
         }
@@ -66,7 +69,6 @@ public class TilePlacement : MonoBehaviour
                     if (palsize >= 255) throw new InternalBufferOverflowException("Too many tiles in the map!");
                     idx = palsize++;
                     palette[idx] = sprite.name;
-                    Debug.Log(sprite.name);
                 }
                 map[y, x] = (byte)idx;
             }

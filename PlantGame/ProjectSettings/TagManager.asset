@@ -13,8 +13,8 @@ TagManager:
   - UI
   - Player
   - Collision
-  - 
-  - 
+  - Scenery
+  - Roots
   - 
   - 
   - 
@@ -40,4 +40,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Scenery
+    uniqueID: 937147257
+    locked: 0
+  - name: Player
+    uniqueID: 2511458429
+    locked: 0
+  - name: Collision
+    uniqueID: 217213285
     locked: 0
