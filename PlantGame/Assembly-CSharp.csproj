@@ -71,7 +71,6 @@
      <Compile Include="Assets\Scripts\World\FlowerRow.cs" />
      <Compile Include="Assets\Scripts\World\TilePlacement.cs" />
      <Compile Include="Assets\Scripts\Inventory\Inventory.cs" />
-     <Compile Include="Assets\Scripts\Inventory\Currency.cs" />
      <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
      <Compile Include="Assets\Scripts\World\OverworldFlower.cs" />
      <Compile Include="Assets\Scripts\RootMinigame\Nutrient.cs" />
