@@ -3921,7 +3921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3784357395851521774, guid: 23975461a432c3446ac14d967289da0a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UseItem
+      value: BuyButton
       objectReference: {fileID: 0}
     - target: {fileID: 3784357395851521774, guid: 23975461a432c3446ac14d967289da0a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -5032,6 +5032,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventorySlotPrefab: {fileID: 3784357396690084910, guid: 23975461a432c3446ac14d967289da0a, type: 3}
+  items: []
 --- !u!4 &1501263818
 Transform:
   m_ObjectHideFlags: 0

@@ -24,6 +24,22 @@ public class InventorySlot : MonoBehaviour
         itemNameText.text = content.name;
     }
 
+    public void BuyButton()
+    {
+        if (item)
+        {
+            item.Buy();
+            if (Inventory.instance.onItemChangedCallback != null)
+            {
+                Inventory.instance.onItemChangedCallback.Invoke();
+            }
+        }
+        else
+        {
+            Debug.Log("Nothing for sale here.");
+        }
+    }
+
     public void ClearSlot ()
     {
         item = null;

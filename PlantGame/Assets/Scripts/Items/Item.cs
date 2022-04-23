@@ -39,8 +39,15 @@ public class Item : ScriptableObject
     public void Buy()
     {
         Debug.Log("Buying " + name);
-        Inventory.instance.removeCurrency(this.price);
-        AddToStack();
+        if (Inventory.instance.getCurrency() >= price)
+        {
+            Inventory.instance.removeCurrency(price);
+            AddToStack();
+        }
+        else
+        {
+            Debug.Log("Not enough currency to purchase " + name);
+        }
     }
 
     public string colorToString(int colorInt)
