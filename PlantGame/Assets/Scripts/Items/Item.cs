@@ -26,7 +26,6 @@ public class Item : ScriptableObject
     {
         Debug.Log("Using " + name);
         RemoveFromStack();
-
     }
 
     public void Sell()

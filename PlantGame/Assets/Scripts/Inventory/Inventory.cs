@@ -56,14 +56,7 @@ public class Inventory : MonoBehaviour
 
     public void Add(Item itemData)
     {
-        if(items[getItemNumber(itemData)].stackSize > 0)
-        {
-            items[getItemNumber(itemData)].AddToStack();
-        }
-        else
-        {
-            items[getItemNumber(itemData)].AddToStack();
-        }
+        items[getItemNumber(itemData)].AddToStack();
         if (onItemChangedCallback != null)
         {
             onItemChangedCallback.Invoke();
@@ -74,6 +67,30 @@ public class Inventory : MonoBehaviour
         if (items[getItemNumber(itemData)].stackSize > 0)
         {
             items[getItemNumber(itemData)].RemoveFromStack();
+        }
+        else
+        {
+            Debug.Log("No " + itemData.name + " to remove.");
+        }
+        if (onItemChangedCallback != null)
+        {
+            onItemChangedCallback.Invoke();
+        }
+    }
+
+    public void Buy(Item itemData)
+    {
+        items[getItemNumber(itemData)].Buy();
+        if (onItemChangedCallback != null)
+        {
+            onItemChangedCallback.Invoke();
+        }
+    }
+    public void Sell(Item itemData)
+    {
+        if (items[getItemNumber(itemData)].stackSize > 0)
+        {
+            items[getItemNumber(itemData)].Sell();
         }
         else
         {
