@@ -58,72 +58,72 @@ Shader "Unlit/NewUnlitShader"
 				}
 			else if ((col.r == col.g) && (col.g == col.b)) {
 				switch (inputColor) {
-					case 0:
+					case 0: // red
 						col.r = col.r * 1.0;
 						col.g = col.g * 0.0;
 						col.b = col.b * 0.0;
 						break;
 					case 1:
 						col.r = col.r * 1.0;
-						col.g = col.g * 0.5;
+						col.g = col.g * 0.3;
 						col.b = col.b * 0.0;
 						break;
-					case 2:
+					case 2:  //orange
+						col.r = col.r * 1.0;
+						col.g = col.g * 0.6;
+						col.b = col.b * 0.0;
+						break;
+					case 3:
+						col.r = col.r * 1.0;
+						col.g = col.g * 0.8;
+						col.b = col.b * 0.0;
+						break;
+					case 4: //yellow
 						col.r = col.r * 1.0;
 						col.g = col.g * 1.0;
 						col.b = col.b * 0.0;
 						break;
-					case 3:
+					case 5:
 						col.r = col.r * 0.5;
 						col.g = col.g * 1.0;
 						col.b = col.b * 0.0;
 						break;
-					case 4:
+					case 6: // green
 						col.r = col.r * 0.0;
-						col.g = col.g * 1.0;
+
+						col.g = col.g * 0.66;
 						col.b = col.b * 0.0;
-						break;
-					case 5:
-						col.r = col.r * 0.0;
-						col.g = col.g * 1.0;
-						col.b = col.b * 0.5;
-						break;
-					case 6:
-						col.r = col.r * 0.0;
-						col.g = col.g * 1.0;
-						col.b = col.b * 1.0;
 						break;
 					case 7:
 						col.r = col.r * 0.0;
-						col.g = col.g * 0.5;
-						col.b = col.b * 1.0;
+
+						col.g = col.g * 0.33;
+						col.b = col.b * 0.5;
 						break;
-					case 8:
+					case 8: //blue
 						col.r = col.r * 0.0;
 						col.g = col.g * 0.0;
 						col.b = col.b * 1.0;
 						break;
 					case 9:
-						col.r = col.r * 0.5;
+
+						col.r = col.r * 0.4;
 						col.g = col.g * 0.0;
-						col.b = col.b * 1.0;
+						col.b = col.b * 0.8;
 						break;
-					case 10:
-						col.r = col.r * 1.0;
+					case 10: //purple
+						col.r = col.r * 0.6;
 						col.g = col.g * 0.0;
-						col.b = col.b * 1.0;
+						col.b = col.b * 0.6;
 						break;
 					case 11:
-						col.r = col.r * 1.0;
+						col.r = col.r * 0.8;
 						col.g = col.g * 0.0;
-						col.b = col.b * 0.5;
+						col.b = col.b * 0.6;
 						break;
 					default:
-						col.r = col.r * 1.0;
-						col.g = col.g * 1.0;
-						col.b = col.b * 1.0;
 						break;
-				}
+					}
 				switch (inputIntensity) {
 					case 0:
 						col.r = col.r * 0.75;
@@ -139,8 +139,8 @@ Shader "Unlit/NewUnlitShader"
 						break;
 					default:
 						break;
-			}
-			}
+					}
+				}
 				return col;
 			}
 			ENDCG
