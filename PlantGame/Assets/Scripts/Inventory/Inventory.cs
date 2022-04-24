@@ -162,6 +162,7 @@ public class Inventory : MonoBehaviour
         FileStream stream = new FileStream(path, FileMode.Create);
         InventorySave data = new InventorySave(items);
         formatter.Serialize(stream, data);
+        stream.Close();
 
         // Currency
         path = Application.persistentDataPath + "/currency.dat";
@@ -188,6 +189,7 @@ public class Inventory : MonoBehaviour
                 CurrencySave data = (CurrencySave)(formatter.Deserialize(stream));
                 setCurrency(data.currency);
             }
+            stream.Close();
         }
 
         // Load inventory items
@@ -230,9 +232,11 @@ public class Inventory : MonoBehaviour
                     newItem.stackSize = itemListStack[i];
                     reconstructedList.Add(newItem);
                 }
-                stream.Close();
+
                 Debug.Log("Inventory file loaded");
             }
+
+            stream.Close();
         }
 
         // Calls old method to ensure everything has a stack available
