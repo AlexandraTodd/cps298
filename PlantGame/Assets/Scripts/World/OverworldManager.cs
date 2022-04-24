@@ -264,10 +264,10 @@ public class OverworldManager : MonoBehaviour {
             CurrencySave newPB = new CurrencySave(outputCurrency);
             formatter.Serialize(stream, newPB);
             stream.Close();
-        }
 
-        // Ka-ching
-        soundEffects.PlayOneShot(sound_money);
+            // Ka-ching
+            soundEffects.PlayOneShot(sound_money);
+        }
 
         // Writes a new personal best if necessary. Made a separate file so it works between different playthroughs
         if (writeNewPersonalBest) {

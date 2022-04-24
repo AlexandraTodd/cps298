@@ -44,7 +44,7 @@ public class FlowerRow : MonoBehaviour {
     void OnMouseDown() {
         if (finished || OverworldManager.Instance.fadeOutAnimation != 0f) return;
         // When exiting the minigame, the player will be next to it on the pathway to their house
-        if (PauseMenu.Instance) PauseMenu.Instance.playerPosition = new Vector3(-0.715f, transform.position.y, 0f); ;
+        if (PauseMenu.Instance) PauseMenu.Instance.playerPosition = new Vector3(-0.715f, transform.position.y, 0f);
 
         // Go to alternate scene, loading this specified row
         RootMinigameManager.currentSlot = slotNumber;

@@ -112,6 +112,12 @@ public class PauseMenu : MonoBehaviour {
             File.Delete(inventoryPath);
         }
 
+        // Currency
+        string currencyPath = Application.persistentDataPath + "/currency.dat";
+        if (File.Exists(currencyPath)) {
+            File.Delete(currencyPath);
+        }
+
         // Calls the continue game function now that we have no save
         ContinueGame();
     }
