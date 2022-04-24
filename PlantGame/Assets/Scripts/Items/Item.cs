@@ -31,8 +31,15 @@ public class Item : ScriptableObject
     public void Sell()
     {
         Debug.Log("Selling " + name);
-        Inventory.instance.addCurrency(this.price);
-        RemoveFromStack();
+        if (this.stackSize > 0)
+        {
+            Inventory.instance.addCurrency(this.price);
+            RemoveFromStack();
+        }
+        else
+        {
+            Debug.Log("No " + name + " to sell ");
+        }
     }
 
     public void Buy()
