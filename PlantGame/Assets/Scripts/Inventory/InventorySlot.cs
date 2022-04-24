@@ -9,6 +9,7 @@ public class InventorySlot : MonoBehaviour {
     public Text stackSizeText;
     private string itemNameString;
     public Text itemNameText;
+    public Text priceText;
 
     public void LoadSlot(Item content)
     {
@@ -21,6 +22,7 @@ public class InventorySlot : MonoBehaviour {
         stackSize = content.stackSize;
         stackSizeText.text = content.stackSize.ToString();
         itemNameText.text = content.name;
+        priceText.text = "$" + content.price.ToString();
     }
 
     public void BuyButton()
@@ -60,5 +62,6 @@ public class InventorySlot : MonoBehaviour {
         Icon.enabled = false;
         stackSizeText.text = "";
         itemNameText.text = "";
+        priceText.text = "";
     }
 }

@@ -19,9 +19,7 @@ public class Inventory : MonoBehaviour
         }
         instance = this;
         items = new List<Item>();
-        // items = generateItemList();
         items = LoadInventoryItems();
-        currency = generateCurrency();
     }
     #endregion
 
@@ -120,7 +118,6 @@ public class Inventory : MonoBehaviour
         for (int c = 0; c < colorCount; c++) // c for color
         {
             freshItemList.Add(Seed.CreateInstance(c, itemCount));
-            freshItemList[itemCount].AddToStack();
             itemCount++;
         }
         return freshItemList;
@@ -180,6 +177,7 @@ public class Inventory : MonoBehaviour
         // Will use old method to generate list if necessary
         bool generateNewList = true;
 
+        setCurrency(generateCurrency());
         // Currency is accessed more frequently than inventory items, so currency will be going in a separate file
         string currencyPath = Application.persistentDataPath + "/currency.dat";
         if (File.Exists(currencyPath)) {

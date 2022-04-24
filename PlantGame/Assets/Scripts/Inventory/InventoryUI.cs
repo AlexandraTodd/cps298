@@ -49,11 +49,8 @@ public class InventoryUI : MonoBehaviour
             }
             else
             {
-                if ((inventory.items[i].stackSize > 0) || checkIfShopSeed(inventory.items[i].color)) // comment out this if statement and you can see all seeds in inventory to assess color
-                {
-                    SeedSlots[seeds].LoadSlot(inventory.items[i]);
-                    seeds++;
-                }
+                SeedSlots[seeds].LoadSlot(inventory.items[i]);
+                seeds++;
             }
         }
 
