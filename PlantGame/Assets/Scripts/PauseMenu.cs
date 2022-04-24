@@ -106,6 +106,12 @@ public class PauseMenu : MonoBehaviour {
             File.Delete(fieldPath);
         }
 
+        // Inventory
+        string inventoryPath = Application.persistentDataPath + "/inventory.dat";
+        if (File.Exists(inventoryPath)) {
+            File.Delete(inventoryPath);
+        }
+
         // Calls the continue game function now that we have no save
         ContinueGame();
     }

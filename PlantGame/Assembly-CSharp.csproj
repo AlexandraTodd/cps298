@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\World\TilePlacement.cs" />
     <Compile Include="Assets\Scripts\Inventory\Inventory.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\InventorySlotButtonRightClick.cs" />
     <Compile Include="Assets\Scripts\World\OverworldFlower.cs" />
     <Compile Include="Assets\FlowerScript.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\Nutrient.cs" />
@@ -82,7 +83,7 @@
     <Compile Include="Assets\Scripts\World\SoundRandomizer.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\RootMinigameManager.cs" />
     <Compile Include="Assets\Scripts\World\OverworldManager.cs" />
-    <Compile Include="Assets\Scripts\RootMinigame\RootMinigameSave.cs" />
+    <Compile Include="Assets\Scripts\SaveSystem\RootMinigameSave.cs" />
     <Compile Include="Assets\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\PlantedRoot.cs" />
     <Compile Include="Assets\Scripts\StringExtensions.cs" />
@@ -90,7 +91,9 @@
     <Compile Include="Assets\Scripts\RootMinigame\ActiveRoot.cs" />
     <Compile Include="Assets\Scripts\World\TileModifyTest.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\Aquifer.cs" />
-    <Compile Include="Assets\InventorySlotButtonRightClick.cs" />
+    <Compile Include="Assets\AppraisalPrompt.cs" />
+    <Compile Include="Assets\Scripts\SaveSystem\PersonalBestSave.cs" />
+    <Compile Include="Assets\Scripts\SaveSystem\InventorySave.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

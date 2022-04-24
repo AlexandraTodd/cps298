@@ -343,7 +343,6 @@ public class RootMinigameManager : MonoBehaviour {
         // Load save and replace generation parameters if available
         string path = Application.persistentDataPath + "/roots"+currentSlot+".dat";
         if (File.Exists(path)) {
-            Debug.Log("File found, loading");
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(path, FileMode.Open);
             if (stream.Length != 0) {

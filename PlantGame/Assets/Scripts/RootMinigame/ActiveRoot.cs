@@ -117,10 +117,12 @@ public class ActiveRoot : MonoBehaviour {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Collision")) {
             Debug.Log("Collided with obstacle");
             RootMinigameManager.Instance.soundEffects.PlayOneShot(RootMinigameManager.Instance.sound_collidewithrock);
+            transform.position = collision.GetContact(0).point;     // Makes the collision look more natural
             EndRoot(0);
         }
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Water")) {
+            transform.position = collision.GetContact(0).point;     // Makes the collision look more natural
             EndRoot(nutrientCount);
         }
     }

@@ -6,7 +6,7 @@ using TMPro;
 
 public class MainMenuDummyRoot : MonoBehaviour {
     [HideInInspector] public float generatePointTimer = 0f;
-    [HideInInspector] public float speed = 600f;
+    [HideInInspector] public float speed = 500f;
 
     [HideInInspector] public Vector2 target;
 

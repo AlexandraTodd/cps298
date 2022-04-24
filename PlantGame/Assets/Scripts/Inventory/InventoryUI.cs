@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -62,5 +65,9 @@ public class InventoryUI : MonoBehaviour
             SeedSlots[i].ClearSlot();
         }
         currencyText.text = "Currency: " + inventory.getCurrency().ToString();
+
+        // From Drake: also save an inventory file
+        // It may be ideal to do this on a less regular interval such as closing the menu, so I'm placing it in a separate method just in case
+        inventory.SaveInventoryItems();
     }
 }

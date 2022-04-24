@@ -18,8 +18,12 @@ public class OverworldManager : MonoBehaviour {
     public AudioLowPassFilter lowPassFilter;
     public Camera mainCamera;
     public Transform cinematicCameraTarget;
-
     public Image fadeOutOverlay;
+    public GameObject appraisalPrompt;
+    public AudioSource soundEffects;
+    public AudioClip sound_money;
+
+    [HideInInspector] public bool writeNewPersonalBest = true;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +35,8 @@ public class OverworldManager : MonoBehaviour {
         // Dramatically fade in
         mainCamera.orthographicSize = 0.5f;
         fadeInAnimation = 1f;
+
+        CloseAppraisalPrompt();
 
         // Annoyingly enough, these need to be updated every scene change
         PauseMenu.UpdateAudioPreference();
@@ -91,8 +97,7 @@ public class OverworldManager : MonoBehaviour {
         }
 
         if (Input.GetKeyDown(KeyCode.Tab)) {
-            float[] scores = GardenAppraisalValues();
-            Debug.Log("Variance: " + scores[0] + " / 5.00, Volume: " + scores[1] + " / 5.00, Vibrance: " + scores[2] + " / 5.00, Spread: " + scores[3] + " / 5.00");
+            OpenAppraisalPrompt();
         }
     }
 
@@ -189,7 +194,7 @@ public class OverworldManager : MonoBehaviour {
         //       (i.e. tier 3 is worth 5 instead of 3)
         scoreVariance = numberOfColorIntensityCombinationsUsed / 36f;   // Target: All 36 color combinations
         scoreVolume = (numberOfFlowersPlanted / 10f) / 5f;              // Target: 5 flowers per row
-        scoreVibrance = (totalNutrientCount / numberOfFlowersPlanted) / 3f; // Target: 3:1 nutrient:flower ratio
+        scoreVibrance = (totalNutrientCount / Mathf.Max(1f, numberOfFlowersPlanted)) / 3f; // Target: 3:1 nutrient:flower ratio
         scoreSpread = (sumOfAverages / 10f) / 20f;                      // Target: 20 units of distance
 
         // Truncate each being out of 5 stars with 2 decimal points (kept separate for readability and ease of changing formulas if needed)
@@ -200,7 +205,72 @@ public class OverworldManager : MonoBehaviour {
         scoreSpread = Mathf.Clamp(Mathf.Round(scoreSpread * 500f) / 100f, 0f, 5f);
         */
 
+        float finalScore = (scoreVariance + scoreVolume + scoreVibrance + scoreSpread) / 4f;
+        finalScore = Mathf.Round(finalScore * 500f) / 100f;
+
         // Returns array of results
-        return new float[] { scoreVariance, scoreVolume, scoreVibrance, scoreSpread };
+        return new float[] { scoreVariance, scoreVolume, scoreVibrance, scoreSpread, finalScore };
+    }
+
+    public void OpenAppraisalPrompt() {
+        appraisalPrompt.SetActive(true);
+
+        float[] appraisalValues = GardenAppraisalValues();
+
+        // Figure out if this is a PB
+        bool pbExists = false;
+        string path = Application.persistentDataPath + "/personalbest.dat";
+        float incomingScore = appraisalValues[4];
+        float previousBestScore = 0f;
+        if (File.Exists(path)) {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            if (stream.Length != 0) {
+                pbExists = true;
+                PersonalBestSave pb = (PersonalBestSave)(formatter.Deserialize(stream));
+                previousBestScore = pb.previousBest;
+                writeNewPersonalBest = incomingScore > previousBestScore;
+            }
+
+            stream.Close();
+        } else writeNewPersonalBest = true;
+
+        // Update values
+        appraisalPrompt.GetComponent<AppraisalPrompt>().UpdateValues(appraisalValues, pbExists, writeNewPersonalBest, previousBestScore);
+    }
+
+    public void CloseAppraisalPrompt() {
+        appraisalPrompt.SetActive(false);
+    }
+
+    public void AppraisalHarvestAndSell() {
+        float incomingScore = GardenAppraisalValues()[4];
+
+        soundEffects.PlayOneShot(sound_money);
+
+        // Writes a new personal best if necessary. Made a separate file so it works between different playthroughs
+        if (writeNewPersonalBest) {
+            string path = Application.persistentDataPath + "/personalbest.dat";
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Create);
+            PersonalBestSave newPB = new PersonalBestSave(incomingScore);
+            formatter.Serialize(stream, newPB);
+            stream.Close();
+        }
+
+        // Destroy all flower row files if they exist so we can create new plots
+        for (int i = 0; i < 10; i++) {
+            string path = Application.persistentDataPath + "/roots" + i + ".dat";
+            if (File.Exists(path)) {
+                File.Delete(path);
+            }
+        }
+
+        // Increment money goes here; needs to be saved before doing this reload
+
+        // Reset scene
+        CloseAppraisalPrompt();
+        cinematicCameraTarget = mainCamera.transform;
+        TransitionToScene("TownMap");
     }
 }
