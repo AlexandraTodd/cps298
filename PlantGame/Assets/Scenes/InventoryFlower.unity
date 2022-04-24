@@ -859,6 +859,85 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3784357396690084905, guid: 51298141955b68b4fa456106af637f6d, type: 3}
   m_PrefabInstance: {fileID: 266057614}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &292680441
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 292680442}
+  - component: {fileID: 292680444}
+  - component: {fileID: 292680443}
+  m_Layer: 5
+  m_Name: CurrencyText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &292680442
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292680441}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 955850436}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 507.98523, y: -313.51013}
+  m_SizeDelta: {x: 238.0047, y: 51.3859}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &292680443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292680441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 30
+    m_FontStyle: 3
+    m_BestFit: 0
+    m_MinSize: 3
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'Coins: 0'
+--- !u!222 &292680444
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292680441}
+  m_CullTransparentMesh: 1
 --- !u!1001 &315419740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2619,6 +2698,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 114.38
       objectReference: {fileID: 0}
+    - target: {fileID: 7497061475932751234, guid: 51298141955b68b4fa456106af637f6d, type: 3}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7850051822546509861, guid: 51298141955b68b4fa456106af637f6d, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 73.5
@@ -2672,6 +2755,7 @@ MonoBehaviour:
   SeedInventoryUI: {fileID: 1350389493}
   FlowerSlots: []
   SeedSlots: []
+  currencyText: {fileID: 292680443}
 --- !u!114 &955850433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2747,6 +2831,7 @@ RectTransform:
   - {fileID: 1578823922}
   - {fileID: 1174813419}
   - {fileID: 1662024405}
+  - {fileID: 292680442}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

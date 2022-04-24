@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class InventoryUI : MonoBehaviour
     Inventory inventory;
     public InventorySlot[] FlowerSlots;
     public InventorySlot[] SeedSlots;
+    public Text currencyText;
 
     void Start()
     {
@@ -59,5 +61,6 @@ public class InventoryUI : MonoBehaviour
         {
             SeedSlots[i].ClearSlot();
         }
+        currencyText.text = "Currency: " + inventory.getCurrency().ToString();
     }
 }

@@ -28,6 +28,7 @@ public class InventorySlot : MonoBehaviour
     {
         if (item)
         {
+            Debug.Log("buybutton triggered");
             item.Buy();
             if (Inventory.instance.onItemChangedCallback != null)
             {
@@ -36,7 +37,7 @@ public class InventorySlot : MonoBehaviour
         }
         else
         {
-            Debug.Log("Nothing for sale here.");
+            Debug.Log("nothing for sale here.");
         }
     }
 
