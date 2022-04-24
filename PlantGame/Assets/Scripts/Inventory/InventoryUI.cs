@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
@@ -82,5 +83,10 @@ public class InventoryUI : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void exitInventory()
+    {
+        SceneManager.LoadScene("TownMap");
     }
 }
