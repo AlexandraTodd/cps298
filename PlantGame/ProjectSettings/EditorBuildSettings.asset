@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/InventoryFlower.unity
     guid: bd3df6f486422b9459424451d995697c
-  - enabled: 1
-    path: Assets/Scenes/InventorySeed.unity
-    guid: 1b06ac94478869c469daa63cd9f9d6a4
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   m_configObjects: {}

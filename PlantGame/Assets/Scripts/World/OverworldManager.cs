@@ -193,10 +193,12 @@ public class OverworldManager : MonoBehaviour {
         scoreSpread = (sumOfAverages / 10f) / 20f;                      // Target: 20 units of distance
 
         // Truncate each being out of 5 stars with 2 decimal points (kept separate for readability and ease of changing formulas if needed)
+        /*
         scoreVariance = Mathf.Clamp(Mathf.Round(scoreVariance * 500f) / 100f, 0f, 5f);
         scoreVolume = Mathf.Clamp(Mathf.Round(scoreVolume * 500f) / 100f, 0f, 5f);
         scoreVibrance = Mathf.Clamp(Mathf.Round(scoreVibrance * 500f) / 100f, 0f, 5f);
         scoreSpread = Mathf.Clamp(Mathf.Round(scoreSpread * 500f) / 100f, 0f, 5f);
+        */
 
         // Returns array of results
         return new float[] { scoreVariance, scoreVolume, scoreVibrance, scoreSpread };
