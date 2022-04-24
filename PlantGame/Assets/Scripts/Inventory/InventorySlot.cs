@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventorySlot : MonoBehaviour
-{
+public class InventorySlot : MonoBehaviour {
     public Image Icon;
     public Item item;
     public int stackSize;

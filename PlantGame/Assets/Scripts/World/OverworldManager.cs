@@ -189,7 +189,7 @@ public class OverworldManager : MonoBehaviour {
         //       (i.e. tier 3 is worth 5 instead of 3)
         scoreVariance = numberOfColorIntensityCombinationsUsed / 36f;   // Target: All 36 color combinations
         scoreVolume = (numberOfFlowersPlanted / 10f) / 5f;              // Target: 5 flowers per row
-        scoreVibrance = totalNutrientCount / 45f;                       // Target: 45 nutrients (15 highest vibrance flowers)
+        scoreVibrance = (totalNutrientCount / numberOfFlowersPlanted) / 3f; // Target: 3:1 nutrient:flower ratio
         scoreSpread = (sumOfAverages / 10f) / 20f;                      // Target: 20 units of distance
 
         // Truncate each being out of 5 stars with 2 decimal points (kept separate for readability and ease of changing formulas if needed)
