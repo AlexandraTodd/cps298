@@ -15,6 +15,7 @@ public class InventoryUI : MonoBehaviour
     public InventorySlot[] FlowerSlots;
     public InventorySlot[] SeedSlots;
     public Text currencyText;
+    public int[] shopSeeds = { 0, 4, 8 };
 
     void Start()
     {
@@ -47,7 +48,7 @@ public class InventoryUI : MonoBehaviour
             }
             else
             {
-                if (inventory.items[i].stackSize > 0) // comment out this if statement and you can see all seeds in inventory to assess color
+                if ((inventory.items[i].stackSize > 0) || checkIfShopSeed(inventory.items[i].color)) // comment out this if statement and you can see all seeds in inventory to assess color
                 {
                     SeedSlots[seeds].LoadSlot(inventory.items[i]);
                     seeds++;
@@ -69,5 +70,17 @@ public class InventoryUI : MonoBehaviour
         // From Drake: also save an inventory file
         // It may be ideal to do this on a less regular interval such as closing the menu, so I'm placing it in a separate method just in case
         inventory.SaveInventoryItems();
+    }
+
+    private bool checkIfShopSeed(int seedColor)
+    {
+        foreach(int seed in shopSeeds)
+        {
+            if(seed == seedColor)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -27,8 +27,22 @@ public class InventorySlot : MonoBehaviour {
     {
         if (item)
         {
-            Debug.Log("buybutton triggered");
             item.Buy();
+            if (Inventory.instance.onItemChangedCallback != null)
+            {
+                Inventory.instance.onItemChangedCallback.Invoke();
+            }
+        }
+        else
+        {
+            Debug.Log("nothing for sale here.");
+        }
+    }
+    public void SellButton()
+    {
+        if (item)
+        {
+            item.Sell();
             if (Inventory.instance.onItemChangedCallback != null)
             {
                 Inventory.instance.onItemChangedCallback.Invoke();

@@ -47,7 +47,7 @@ public class Inventory : MonoBehaviour
             Seed test4 = Seed.CreateInstance(5);
             Remove(test4);
         }
-        }
+    }
 
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
@@ -121,6 +121,7 @@ public class Inventory : MonoBehaviour
         for (int c = 0; c < colorCount; c++) // c for color
         {
             freshItemList.Add(Seed.CreateInstance(c, itemCount));
+            freshItemList[itemCount].AddToStack();
             itemCount++;
         }
         return freshItemList;
@@ -151,10 +152,8 @@ public class Inventory : MonoBehaviour
         currency -= currencyDec;
         Debug.Log("Currency total decremented to: " + currency);
     }
-    public int getCurrency()
-    {
-        return currency;
-    }
+    public int getCurrency() { return currency; }
+    private void setCurrency(int currencySet) { currency = currencySet; }
 
     public void SaveInventoryItems() {
         BinaryFormatter formatter = new BinaryFormatter();
@@ -167,7 +166,7 @@ public class Inventory : MonoBehaviour
         formatter.Serialize(stream, data);
         stream.Close();
 
-        Debug.Log("Inventory saved");
+        //Debug.Log("Inventory saved");
     }
 
     public List<Item> LoadInventoryItems() {
@@ -215,7 +214,7 @@ public class Inventory : MonoBehaviour
                     newItem.stackSize = itemListStack[i];
                     reconstructedList.Add(newItem);
                 }
-
+                stream.Close();
                 Debug.Log("Inventory file loaded");
             }
         }
