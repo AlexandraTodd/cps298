@@ -168,7 +168,7 @@ public class Inventory : MonoBehaviour
         path = Application.persistentDataPath + "/currency.dat";
         stream = new FileStream(path, FileMode.Create);
         CurrencySave currencySave = new CurrencySave(getCurrency());
-        formatter.Serialize(stream, data);
+        formatter.Serialize(stream, currencySave);
 
         // Done
         stream.Close();
