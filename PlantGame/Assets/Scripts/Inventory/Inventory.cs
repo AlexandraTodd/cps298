@@ -23,30 +23,6 @@ public class Inventory : MonoBehaviour
     }
     #endregion
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.D))  // for testing, can be removed
-        {
-            Flower test = Flower.CreateInstance(4, 1);
-            Add(test);
-            Flower test2 = Flower.CreateInstance(8, 2);
-            Add(test2);
-            Seed test3 = Seed.CreateInstance(10);
-            Add(test3);
-            Seed test4 = Seed.CreateInstance(5);
-            Add(test4);
-            Flower test5 = Flower.CreateInstance(9, 0);
-            Add(test5);
-        }
-        if (Input.GetKeyDown(KeyCode.F))  // for testing, can be removed
-        {
-            Flower test = Flower.CreateInstance(4, 1);
-            Remove(test);
-            Seed test4 = Seed.CreateInstance(5);
-            Remove(test4);
-        }
-    }
-
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
     public List<Item> items;

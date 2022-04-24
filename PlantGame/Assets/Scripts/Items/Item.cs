@@ -63,27 +63,27 @@ public class Item : ScriptableObject
             case 0:
                 return "Red";
             case 1:
-                return "Red-Orange";
+                return "Sunset";
             case 2:
                 return "Orange";
             case 3:
-                return "Yellow-Orange";
+                return "Amber";
             case 4:
                 return "Yellow";
             case 5:
-                return "Yellow-Green";
+                return "Chartreuse";
             case 6:
                 return "Green";
             case 7:
-                return "Blue-Green";
+                return "Cyan";
             case 8:
                 return "Blue";
             case 9:
-                return "Blue-Purple";
+                return "Iris";
             case 10:
-                return "Purple";
+                return "Violet";
             case 11:
-                return "Red-Purple";
+                return "Fuchsia";
             default:
                 return "Unknown Color";
         }
