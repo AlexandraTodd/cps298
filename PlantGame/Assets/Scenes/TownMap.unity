@@ -814,6 +814,7 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 0
+  facing: 2
 --- !u!212 &263954641
 SpriteRenderer:
   m_ObjectHideFlags: 0
