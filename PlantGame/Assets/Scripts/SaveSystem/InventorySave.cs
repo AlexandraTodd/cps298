@@ -4,13 +4,9 @@ using UnityEngine;
 [System.Serializable]
 
 public class InventorySave {
-    public int currency;
     public int[] itemListType, itemListStack, itemListColor, itemListIntensity;
 
-
-    public InventorySave(int currencyInput, List<Item> items) {
-        currency = currencyInput;
-
+    public InventorySave(List<Item> items) {
         // Converts an incoming list of items into arrays we can save into a binary file and reconstruct into items later
         int numberOfItems = items.Count;
         itemListType = new int[numberOfItems];

@@ -157,16 +157,21 @@ public class Inventory : MonoBehaviour
 
     public void SaveInventoryItems() {
         BinaryFormatter formatter = new BinaryFormatter();
+
+        // Inventory
         string path = Application.persistentDataPath + "/inventory.dat";
         FileStream stream = new FileStream(path, FileMode.Create);
-
-        // See InventorySave class for converson of Items into binary readable formats
-        InventorySave data = new InventorySave(getCurrency(), items);
-
+        InventorySave data = new InventorySave(items);
         formatter.Serialize(stream, data);
-        stream.Close();
 
-        //Debug.Log("Inventory saved");
+        // Currency
+        path = Application.persistentDataPath + "/currency.dat";
+        stream = new FileStream(path, FileMode.Create);
+        CurrencySave currencySave = new CurrencySave(getCurrency());
+        formatter.Serialize(stream, data);
+
+        // Done
+        stream.Close();
     }
 
     public List<Item> LoadInventoryItems() {
@@ -175,6 +180,18 @@ public class Inventory : MonoBehaviour
         // Will use old method to generate list if necessary
         bool generateNewList = true;
 
+        // Currency is accessed more frequently than inventory items, so currency will be going in a separate file
+        string currencyPath = Application.persistentDataPath + "/currency.dat";
+        if (File.Exists(currencyPath)) {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(currencyPath, FileMode.Open);
+            if (stream.Length != 0) {
+                CurrencySave data = (CurrencySave)(formatter.Deserialize(stream));
+                setCurrency(data.currency);
+            }
+        }
+
+        // Load inventory items
         string path = Application.persistentDataPath + "/inventory.dat";
         if (File.Exists(path)) {
             BinaryFormatter formatter = new BinaryFormatter();

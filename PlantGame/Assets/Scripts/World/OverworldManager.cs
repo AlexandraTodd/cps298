@@ -197,14 +197,6 @@ public class OverworldManager : MonoBehaviour {
         scoreVibrance = (totalNutrientCount / Mathf.Max(1f, numberOfFlowersPlanted)) / 3f; // Target: 3:1 nutrient:flower ratio
         scoreSpread = (sumOfAverages / 10f) / 20f;                      // Target: 20 units of distance
 
-        // Truncate each being out of 5 stars with 2 decimal points (kept separate for readability and ease of changing formulas if needed)
-        /*
-        scoreVariance = Mathf.Clamp(Mathf.Round(scoreVariance * 500f) / 100f, 0f, 5f);
-        scoreVolume = Mathf.Clamp(Mathf.Round(scoreVolume * 500f) / 100f, 0f, 5f);
-        scoreVibrance = Mathf.Clamp(Mathf.Round(scoreVibrance * 500f) / 100f, 0f, 5f);
-        scoreSpread = Mathf.Clamp(Mathf.Round(scoreSpread * 500f) / 100f, 0f, 5f);
-        */
-
         float finalScore = (scoreVariance + scoreVolume + scoreVibrance + scoreSpread) / 4f;
         finalScore = Mathf.Round(finalScore * 500f) / 100f;
 
@@ -246,6 +238,35 @@ public class OverworldManager : MonoBehaviour {
     public void AppraisalHarvestAndSell() {
         float incomingScore = GardenAppraisalValues()[4];
 
+        // Handling currency
+        if (incomingScore > 0f) {
+            // Check if we already have a currency value saved to increment
+            // If not, it will use the default 25
+            int outputCurrency = 25;
+            string path = Application.persistentDataPath + "/currency.dat";
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream;
+            if (File.Exists(path)) {
+                stream = new FileStream(path, FileMode.Open);
+                if (stream.Length != 0) {
+                    CurrencySave data = (CurrencySave)(formatter.Deserialize(stream));
+                    outputCurrency = data.currency;
+                }
+
+                stream.Close();
+            }
+
+            // Increment new currency
+            outputCurrency += Mathf.RoundToInt(incomingScore * 10f);
+
+            // Save new currency value
+            stream = new FileStream(path, FileMode.Create);
+            CurrencySave newPB = new CurrencySave(outputCurrency);
+            formatter.Serialize(stream, newPB);
+            stream.Close();
+        }
+
+        // Ka-ching
         soundEffects.PlayOneShot(sound_money);
 
         // Writes a new personal best if necessary. Made a separate file so it works between different playthroughs
@@ -265,8 +286,6 @@ public class OverworldManager : MonoBehaviour {
                 File.Delete(path);
             }
         }
-
-        // Increment money goes here; needs to be saved before doing this reload
 
         // Reset scene
         CloseAppraisalPrompt();
