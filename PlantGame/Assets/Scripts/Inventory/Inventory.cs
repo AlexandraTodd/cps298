@@ -105,7 +105,6 @@ public class Inventory : MonoBehaviour
         }
     }
 
-
     private List<Item> generateItemList()   // change to if fresh save generate, else load list
     {
         int itemCount = 0;
