@@ -236,11 +236,11 @@ public class OverworldManager : MonoBehaviour {
                         distanceBetweenFlowersThisRowTally += distancesBetweenFlowersThisRow[i];
                     }
 
-                    distanceBetweenFlowers[flowerRow] = distanceBetweenFlowersThisRowTally / firstXPositionsOfFlowers.Count;
+                    distanceBetweenFlowers[flowerRow] = distanceBetweenFlowersThisRowTally / Mathf.Max(1f, firstXPositionsOfFlowers.Count);
                 }
 
                 stream.Close();
-            }
+            } 
         }
 
         // Tallying number of combinations used for Variance
