@@ -66,20 +66,32 @@ public class ActiveRoot : MonoBehaviour {
         // Detect collisions with other roots. 0 in EndRoot means the plant was unsuccessful
         foreach (PlantedRoot pr in RootMinigameManager.Instance.plantedRoots) {
             for (int i = 1; i < pr.stem.positionCount; i++) {
-                if (Physics2D.Raycast(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1) - pr.stem.GetPosition(i), Vector2.Distance(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1)), (1 << 9))) {
-                    Debug.Log("Collided with pre-existing root");
+                // In English: Check if we intersect with any lines formed between points of the linerenderer
+                // (1 << 9) is bitshifting to make it only check on the layer of the roots for performance and prevent false positives from interface stuff
+                RaycastHit2D hit = Physics2D.Raycast(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1) - pr.stem.GetPosition(i), Vector2.Distance(pr.stem.GetPosition(i), pr.stem.GetPosition(i - 1)), (1 << 9));
+                if (hit.collider != null) {
                     RootMinigameManager.Instance.soundEffects.PlayOneShot(RootMinigameManager.Instance.sound_collidewithroot);
                     rootCollided = true;
+
+                    // Makes root end look more natural
+                    transform.position = hit.point;
                 }
             }
         }
 
         // Detect collisions with own root. 0 in EndRoot means the plant was unsuccessful
         for (int i = 1; i < stem.positionCount; i++) {
-            if (Physics2D.Raycast(stem.GetPosition(i), stem.GetPosition(i - 1) - stem.GetPosition(i), Vector2.Distance(stem.GetPosition(i), stem.GetPosition(i - 1)), (1 << 9))) {
-                Debug.Log("Collided with own root");
+            // In English: Check if we intersect with any lines formed between points of the linerenderer
+            // (1 << 9) is bitshifting to make it only check on the layer of the roots for performance and prevent false positives from interface stuff
+            RaycastHit2D hit = Physics2D.Raycast(stem.GetPosition(i), stem.GetPosition(i - 1) - stem.GetPosition(i), Vector2.Distance(stem.GetPosition(i), stem.GetPosition(i - 1)), (1 << 9));
+            if (hit.collider != null) {
+                // In English: Check if we intersect with any lines formed between points of the linerenderer
+                // (1 << 9) is bitshifting to make it only check on the layer of the roots for performance and prevent false positivies
                 RootMinigameManager.Instance.soundEffects.PlayOneShot(RootMinigameManager.Instance.sound_collidewithroot);
                 rootCollided = true;
+
+                // Makes root end look more natural
+                transform.position = hit.point;
             }
         }
 
@@ -108,14 +120,12 @@ public class ActiveRoot : MonoBehaviour {
         } else UpdateColor(new Color(Mathf.Lerp(stem.endColor.r, 0f, Time.deltaTime * 0.5f), 1f, 0f));
 
         if (strain >= 4f) {
-            Debug.Log("Strained");
             EndRoot(0);
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Collision")) {
-            Debug.Log("Collided with obstacle");
             RootMinigameManager.Instance.soundEffects.PlayOneShot(RootMinigameManager.Instance.sound_collidewithrock);
             transform.position = collision.GetContact(0).point;     // Makes the collision look more natural
             EndRoot(0);
