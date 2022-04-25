@@ -90,6 +90,24 @@ public class OverworldManager : MonoBehaviour {
 
             stream.Close();
         }
+
+        // Check if we have flowers or not
+        for (int i = 0; i < 10; i++) {
+            path = Application.persistentDataPath + "/roots" + i + ".dat";
+            if (File.Exists(path)) {
+                BinaryFormatter formatter = new BinaryFormatter();
+                FileStream stream = new FileStream(path, FileMode.Open);
+                if (stream.Length != 0) {
+                    RootMinigameSave data = (RootMinigameSave)(formatter.Deserialize(stream));
+                    int[] nutrientCount = data.nutrientCount;
+                    for (int p = 0; p < nutrientCount.Length; p++) {
+                        if (nutrientCount[p] > 0) noFlowersPlanted = false;
+                    }
+                }
+
+                stream.Close();
+            }
+        }
     }
 
     // Update is called once per frame
@@ -159,8 +177,8 @@ public class OverworldManager : MonoBehaviour {
         // Things to keep track of as we cycle through each flower row
         float scoreVariance, scoreVolume, scoreVibrance, scoreSpread;
         bool[,] colorVariantsUsed = new bool[12,3];
-        int numberOfFlowersPlanted = 0;
-        int totalNutrientCount = 0;
+        float numberOfFlowersPlanted = 0f;
+        float totalNutrientCount = 0f;
         float[] distanceBetweenFlowers = new float[10];
 
         // Load in each flower row

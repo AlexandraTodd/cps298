@@ -17,7 +17,7 @@ public class FlowerRow : MonoBehaviour {
     private bool finished = false;
 
 
-    void Awake() {
+    void Start() {
         highlightSprite.enabled = false;
         GenerateOverworldFlowers();
 
@@ -121,9 +121,6 @@ public class FlowerRow : MonoBehaviour {
 
                                 // Adds it to a list so we can clear it on command if we want to regenerate this (i.e. pick the flower on overworld)
                                 overworldFlowerObjects.Add(newOverworldFlower);
-
-                                // Report that we can still sell a flower for profit to prevent false game overs
-                                OverworldManager.Instance.noFlowersPlanted = false;
                             }
                         }
                         runningIndex++;
