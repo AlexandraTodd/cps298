@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlaceholderSeedDrag : MonoBehaviour {
     public int colorIndex = -1;
     public Image icon;
+    public int stackSize = 0;
+    public TMP_Text stackText;
+    public TMP_Text seedName;
 
     public void SetColor(int index) {
         colorIndex = index;

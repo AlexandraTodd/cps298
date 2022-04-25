@@ -11,7 +11,7 @@ public class ToucanShopkeeper : MonoBehaviour {
     public TMP_Text moneyDisplayText;
     [HideInInspector] public float flashingAnimation = 0f;
 
-    void Awake() {
+    void Start() {
         moneyDisplayText.text = "You have:\n$";
 
         int currencyValue = 25;
@@ -25,9 +25,13 @@ public class ToucanShopkeeper : MonoBehaviour {
                 CurrencySave data = (CurrencySave)(formatter.Deserialize(stream));
                 currencyValue = data.currency;
             }
+
+            stream.Close();
         }
 
         moneyDisplayText.text += currencyValue;
+
+        if (currencyValue == 0) OverworldManager.Instance.noMoney = true;
     }
 
     // Update is called once per frame

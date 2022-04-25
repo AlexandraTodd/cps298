@@ -36,6 +36,25 @@ public class Seed : Item
 
     private int setSeedPrice(int seedColor)
     {
+        switch (seedColor) {
+            // Primary colors are 1
+            case 0:
+            case 4:
+            case 8:
+                return 1;
+
+            // Secondary(?) colors are 3
+            case 2:
+            case 6:
+            case 10:
+                return 3;
+
+            // Tertiary(?) colors are 5
+            default:
+                return 5;
+        }
+
+        /*
         int seedPrice = 1;
         if(seedColor == 0 || seedColor % 2 == 0) { } // roygbp
         else
@@ -43,5 +62,6 @@ public class Seed : Item
             seedPrice = 3;
         }
         return seedPrice;
+        */
     }
 }

@@ -11,6 +11,7 @@ public class AppraisalPrompt : MonoBehaviour {
     public TMP_Text personalBestDescription;
     public TMP_Text moneyValue;
     public GameObject newPersonalBestNotification;
+    public Button harvestSellButton;
 
     public void UpdateValues(float[] incomingValues, bool pbExists, bool isPb, float previousBest) {
         for (int i = 0; i < incomingValues.Length; i++) {
@@ -43,6 +44,9 @@ public class AppraisalPrompt : MonoBehaviour {
 
             // Money is simply stars times 10, rounded to nearest dollar
             moneyValue.text = "$"+Mathf.Round(incomingValues[4] * 10f);
+
+            // Disables harvest/sell button if it wouldn't do anything
+            harvestSellButton.interactable = incomingValues[4] > 0f;
 
             // Stars have some quirks with their visuals that would be better to handle with a method
             // The divider is divide by 5 if its the total value, since thats the only one that comes already converted to a 5 star format

@@ -33,11 +33,14 @@ public class Item : ScriptableObject
         Debug.Log("Selling " + name);
         if (this.stackSize > 0)
         {
+            InventoryUI.SetNotificationText("Sold back " + name + "! You got back $" + this.price + ".");
+            InventoryUI.Kaching();
             Inventory.instance.addCurrency(this.price);
             RemoveFromStack();
         }
         else
         {
+            InventoryUI.SetNotificationText("You don't have "+name+" to sell back.");
             Debug.Log("No " + name + " to sell ");
         }
     }
@@ -47,11 +50,20 @@ public class Item : ScriptableObject
         Debug.Log("Buying " + name);
         if (Inventory.instance.getCurrency() >= price)
         {
+            InventoryUI.SetNotificationText("You bought " + name + " for $"+this.price+".");
+            InventoryUI.Kaching();
             Inventory.instance.removeCurrency(price);
             AddToStack();
+
+            // Tell game we've bought an item, so unlock the flower rows
+            if (PauseMenu.Instance != null) {
+                PauseMenu.Instance.playerBoughtFirstTime = true;
+                PauseMenu.Instance.showShopInstructions = false;
+            }
         }
         else
         {
+            InventoryUI.SetNotificationText("You don't have enough money to buy this " + name + "!");
             Debug.Log("Not enough currency to purchase " + name);
         }
     }

@@ -21,4 +21,11 @@ public class InventorySave {
             itemListIntensity[i] = items[i].intensity;
         }
     }
+
+    public InventorySave(int[] i1, int[] i2, int[] i3, int[] i4) {
+        itemListType = i1;
+        itemListStack = i2;
+        itemListColor = i3;
+        itemListIntensity = i4;
+    }
 }

@@ -12,10 +12,9 @@ public class OverworldManager : MonoBehaviour {
     [HideInInspector] public float fadeOutAnimation = 0f;
     [HideInInspector] public float fadeInAnimation = 0f;
     [HideInInspector] public bool controllingCamera = false;
+    [HideInInspector] public bool writeNewPersonalBest = true;
     string targetSceneName = "";
 
-    public AudioSource music;
-    public AudioLowPassFilter lowPassFilter;
     public Camera mainCamera;
     public Transform cinematicCameraTarget;
     public Image fadeOutOverlay;
@@ -23,14 +22,20 @@ public class OverworldManager : MonoBehaviour {
     public AudioSource soundEffects;
     public AudioClip sound_money;
 
-    [HideInInspector] public bool writeNewPersonalBest = true;
+    public GameObject shopInstructions;
+    public GameObject goBuyInstructions;
+    public GameObject goPlantInstructions;
+    public GameObject goSellInstructions;
+    public GameObject appraisalInstructions;
+
+    [HideInInspector] public bool noMoney = false;
+    [HideInInspector] public bool noFlowersPlanted = true;
+    [HideInInspector] public bool noItemsInInventory = true;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         Instance = this;
         fadeOutOverlay.enabled = false;
-        lowPassFilter.cutoffFrequency = 22000f;
 
         // Dramatically fade in
         mainCamera.orthographicSize = 0.5f;
@@ -38,23 +43,63 @@ public class OverworldManager : MonoBehaviour {
 
         CloseAppraisalPrompt();
 
+        if (PauseMenu.Instance != null) {
+            // Switch to overworld music if we're playing minigame music (this keeps music between overworld and shop despite being separate scenes)
+            if (!PauseMenu.MusicIsPlayingClip(PauseMenu.Instance.townmusic)) PauseMenu.SetMusic(PauseMenu.Instance.townmusic);
+
+            // Show instructions by circumstance
+            if (PauseMenu.Instance.showShopInstructions) {
+                shopInstructions.SetActive(true);
+                goBuyInstructions.SetActive(true);
+                appraisalInstructions.SetActive(false);
+                goSellInstructions.SetActive(false);
+                goPlantInstructions.SetActive(false);
+            } else {
+                shopInstructions.SetActive(false);
+                goBuyInstructions.SetActive(false);
+
+                goPlantInstructions.SetActive(PauseMenu.Instance.showMinigameInstructions);
+
+                appraisalInstructions.SetActive(PauseMenu.Instance.showAppraisalInstructions);
+                goSellInstructions.SetActive(PauseMenu.Instance.showAppraisalInstructions);
+            }
+        }
+
         // Annoyingly enough, these need to be updated every scene change
         PauseMenu.UpdateAudioPreference();
+
+        // Check if we have any items to sell or not
+        string path = Application.persistentDataPath + "/inventory.dat";
+        if (File.Exists(path)) {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            if (stream.Length != 0) {
+                // This loads in a binary file and reconstructs its integer arrays into List items
+                InventorySave data = (InventorySave)(formatter.Deserialize(stream));
+                int[] itemListType = data.itemListType;
+                int[] itemListStack = data.itemListStack;
+                int[] itemListColor = data.itemListColor;
+                int[] itemListIntensity = data.itemListIntensity;
+
+                for (int i = 0; i < itemListType.Length; i++) {
+                    if (itemListType[i] == 1 && itemListStack[i] > 0) {
+                        noItemsInInventory = false;
+                    }
+                }
+            }
+
+            stream.Close();
+        }
     }
 
     // Update is called once per frame
     void Update() {
         // Fade in from white at the start
         if (fadeInAnimation > 0f) {
-            // 1.551535 is the default set
-            mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, 1.551535f, Time.deltaTime * 4f);
+            mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, 1f, Time.deltaTime * 4f);
             fadeOutOverlay.enabled = true;
-
             fadeInAnimation = Mathf.Max(0f, fadeInAnimation - Time.deltaTime);
-
             fadeOutOverlay.color = new Color(1f, 1f, 1f, fadeInAnimation);
-
-            music.volume = 1f - fadeInAnimation;
 
             if (fadeInAnimation == 0f) {
                 fadeOutOverlay.enabled = false;
@@ -81,8 +126,8 @@ public class OverworldManager : MonoBehaviour {
 
             fadeOutOverlay.color = fadeOutOverlayColor;
 
-            // Music fades out
-            music.volume = Mathf.Min(1f, fadeOutAnimation);
+            // Music fades out if its for the minigame
+            if (targetSceneName == "RootMinigame") PauseMenu.SetMusicInGameVolume(Mathf.Min(1f, fadeOutAnimation));
 
             // Fades out 1 fadeOutAnimation per second, when reaching 0 it completes the switch to another scene
             fadeOutAnimation = Mathf.Max(0f, fadeOutAnimation - Time.deltaTime);
@@ -91,13 +136,16 @@ public class OverworldManager : MonoBehaviour {
             }
         } else {
             if (PauseMenu.Instance != null) {
-                lowPassFilter.cutoffFrequency = Mathf.Lerp(lowPassFilter.cutoffFrequency, (PauseMenu.Instance.menuCanvas.enabled ? 500f : 22000f), Time.deltaTime * 8f);
-                music.volume = Mathf.Lerp(music.volume, (PauseMenu.Instance.menuCanvas.enabled ? 0.1f : 1f), Time.deltaTime * 4f);
+                PauseMenu.Instance.lowPassFilter.cutoffFrequency = Mathf.Lerp(PauseMenu.Instance.lowPassFilter.cutoffFrequency, (PauseMenu.Instance.menuCanvas.enabled ? 500f : 22000f), Time.deltaTime * 8f);
+                PauseMenu.Instance.music.volume = Mathf.Lerp(PauseMenu.Instance.music.volume, (PauseMenu.Instance.menuCanvas.enabled ? 0.1f : 1f), Time.deltaTime * 4f);
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.Tab)) {
-            OpenAppraisalPrompt();
+    }
+    
+    // LateUpdate calls every frame after Update. Wanted a frame of leeway in case of false game overs being triggered but might not be necessary
+    void LateUpdate() {
+        if(noMoney && noFlowersPlanted && noItemsInInventory) {
+            if (PauseMenu.Instance != null && PauseMenu.Instance.gameOverTimer == 0f) PauseMenu.Instance.gameOverTimer = 5f;
         }
     }
 
@@ -267,6 +315,7 @@ public class OverworldManager : MonoBehaviour {
 
             // Ka-ching
             soundEffects.PlayOneShot(sound_money);
+            if (PauseMenu.Instance != null) PauseMenu.Instance.showAppraisalInstructions = false;
         }
 
         // Writes a new personal best if necessary. Made a separate file so it works between different playthroughs

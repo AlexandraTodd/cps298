@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -16,7 +17,9 @@ public class InventoryUI : MonoBehaviour
     public InventorySlot[] FlowerSlots;
     public InventorySlot[] SeedSlots;
     public Text currencyText;
+    public TMP_Text notificationText;
     public int[] shopSeeds = { 0, 4, 8 };
+    public AudioSource kaching;
 
     void Start()
     {
@@ -31,6 +34,7 @@ public class InventoryUI : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        notificationText.text = "Welcome! How tou-can I help you today?\nLeft clicking a seed buys it, and right click will sell your supply of it back.";
     }
 
     void UpdateUI()
@@ -63,7 +67,7 @@ public class InventoryUI : MonoBehaviour
         {
             SeedSlots[i].ClearSlot();
         }
-        currencyText.text = "Currency: " + inventory.getCurrency().ToString();
+        currencyText.text = "You have: $" + inventory.getCurrency().ToString();
 
         // From Drake: also save an inventory file
         // It may be ideal to do this on a less regular interval such as closing the menu, so I'm placing it in a separate method just in case
@@ -85,5 +89,17 @@ public class InventoryUI : MonoBehaviour
     public void exitInventory()
     {
         SceneManager.LoadScene("TownMap");
+    }
+
+    public static void SetNotificationText(string s) {
+        if (Instance != null) {
+            Instance.notificationText.text = s;
+        }
+    }
+
+    public static void Kaching() {
+        if (Instance != null) {
+            Instance.kaching.Play();
+        }
     }
 }

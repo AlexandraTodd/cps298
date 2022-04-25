@@ -20,6 +20,11 @@ public class FlowerRow : MonoBehaviour {
     void Awake() {
         highlightSprite.enabled = false;
         GenerateOverworldFlowers();
+
+        if (PauseMenu.Instance != null) {
+            finished = !PauseMenu.Instance.playerBoughtFirstTime;
+            rowAvailableSprite.enabled = !finished;
+        }
     }
 
     void Update() {
@@ -43,8 +48,14 @@ public class FlowerRow : MonoBehaviour {
 
     void OnMouseDown() {
         if (finished || OverworldManager.Instance.fadeOutAnimation != 0f) return;
-        // When exiting the minigame, the player will be next to it on the pathway to their house
-        if (PauseMenu.Instance) PauseMenu.Instance.playerPosition = new Vector3(-0.715f, transform.position.y, 0f);
+
+        if (PauseMenu.Instance) {
+            // Prevent clicking if we are paused or game overed
+            if (PauseMenu.Instance.menuCanvas.enabled) return;
+
+            // When exiting the minigame, the player will be next to it on the pathway to their house
+            PauseMenu.Instance.playerPosition = new Vector3(-0.715f, transform.position.y, 0f);
+        }
 
         // Go to alternate scene, loading this specified row
         RootMinigameManager.currentSlot = slotNumber;
@@ -110,6 +121,9 @@ public class FlowerRow : MonoBehaviour {
 
                                 // Adds it to a list so we can clear it on command if we want to regenerate this (i.e. pick the flower on overworld)
                                 overworldFlowerObjects.Add(newOverworldFlower);
+
+                                // Report that we can still sell a flower for profit to prevent false game overs
+                                OverworldManager.Instance.noFlowersPlanted = false;
                             }
                         }
                         runningIndex++;

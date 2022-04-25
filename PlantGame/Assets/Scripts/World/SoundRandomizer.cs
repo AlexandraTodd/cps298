@@ -5,7 +5,7 @@ using UnityEngine;
 public class SoundRandomizer : MonoBehaviour
 {
     public AudioClip[] clips;
-    public float repeatTime = 0.5f;
+    public float repeatTime = 0.25f;
     public float volume = 0.2f;
     private AudioSource source;
     private Coroutine coro = null;
