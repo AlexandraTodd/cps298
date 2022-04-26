@@ -38,8 +38,8 @@ public class RootMinigameManager : MonoBehaviour {
     [HideInInspector] public int cursorGrabbed = -1;
     public Image cursorImage;
 
-    public GameObject placeholderSeedList;
-    public GameObject placeholderSeedPrefab;
+    public GameObject seedList;
+    public GameObject seedListItemPrefab;
 
     public AudioSource soundEffects;
     public AudioClip sound_rootbegin;
@@ -66,23 +66,25 @@ public class RootMinigameManager : MonoBehaviour {
         // Opening fade in animation
         cursorImage.enabled = false;
         exitMinigameButton.SetActive(false);
-        placeholderSeedList.SetActive(false);
+        seedList.SetActive(false);
         fadeAnimationOverlay.enabled = true;
         fadeAnimationOverlay.color = Color.black;
         fadeInAnimation = 1f;
-        
+
         // Create a seed for each of the 12 colors
+        /*
         for (int i = 0; i < 12; i++) {
             GameObject newSeedDrag = Instantiate(placeholderSeedPrefab, placeholderSeedList.transform);
             newSeedDrag.GetComponent<PlaceholderSeedDrag>().SetColor(i);
         }
+        */
 
         // Written in code rather than the Unity interface so that we can color code key words
         instructionPromptText.text = "Guide the flowers' roots to the nutrients and water they need!\n\n• Use your mouse to click on and drag a seed from the menu on the left onto the planter."
             + "\n\n• A root will then emerge and follow your mouse. Guide it into one or more " + $"{"nutrients".AddColor(new Color(0.6f, 0.4f, 0f, 1f))}" + " before completing it by reaching a source of "
             + $"{"water".AddColor(new Color(0f, 0.75f, 1f, 1f))}" + "."
             + "\n\n• Avoid colliding with " + $"{"rocks".AddColor(Color.black)}" + " or other roots - this will break your root!"
-            +"\n\n• Roots thin out the more they bend upward and will eventually break. Try to stay moving downward when possible.";
+            +"\n\n• Roots thin out the more they bend upward and will eventually snap. Stay moving downward when possible.";
 
         LoadPlantMinigameProgress();
 
@@ -149,6 +151,11 @@ public class RootMinigameManager : MonoBehaviour {
 
         // Annoyingly enough, these need to be updated every scene change
         PauseMenu.UpdateAudioPreference();
+
+        if (PauseMenu.Instance != null) {
+            if (!PauseMenu.MusicIsPlayingClip(PauseMenu.Instance.minigamemusic)) PauseMenu.SetMusic(PauseMenu.Instance.minigamemusic);
+            PauseMenu.Instance.TogglePauseMenu(false);
+        }
     }
 
     private IEnumerator PauseWait() {
@@ -170,7 +177,7 @@ public class RootMinigameManager : MonoBehaviour {
     void Update() {
         if (fadeOutAnimation > 0f) {
             exitMinigameButton.SetActive(false);
-            placeholderSeedList.SetActive(false);
+            seedList.SetActive(false);
             delayBeforeReturnToDefaultView = 1f;
             fadeAnimationOverlay.enabled = true;
             fadeAnimationOverlay.color = new Color(1f, 1f, 1f, 1f - fadeOutAnimation);
@@ -192,7 +199,9 @@ public class RootMinigameManager : MonoBehaviour {
             fadeInAnimation = Mathf.Max(0f, fadeInAnimation - Time.deltaTime);
             if (fadeInAnimation == 0f) {
                 fadeAnimationOverlay.enabled = false;
-                instructionPrompt.SetActive(true);
+
+                if (PauseMenu.Instance != null)
+                    if (PauseMenu.Instance.showMinigameInstructions) instructionPrompt.SetActive(true);
             }
         }
 
@@ -215,13 +224,24 @@ public class RootMinigameManager : MonoBehaviour {
                 } else {
                     Color flashAquiferColor = new Color(Mathf.Min(1f - delayBeforeReturnToDefaultView, defaultCameraColor.r), Mathf.Max(delayBeforeReturnToDefaultView * 0.75f, defaultCameraColor.g), Mathf.Max(delayBeforeReturnToDefaultView, defaultCameraColor.b), 1f);
                     defaultCamera.backgroundColor = flashAquiferColor;
+
+                    // We'll show appraisal instructions
+                    if (PauseMenu.Instance != null) {
+                        if (PauseMenu.Instance.showMinigameInstructions) {
+                            PauseMenu.Instance.showMinigameInstructions = false;
+                            PauseMenu.Instance.showAppraisalInstructions = true;
+                        }
+                    }
                 }
             }
 
             if (delayBeforeReturnToDefaultView == 0f) {
                 if (fadeInAnimation == 0f) {
-                    exitMinigameButton.SetActive(true);
-                    placeholderSeedList.SetActive(true);
+                    if (!seedList.activeInHierarchy) {
+                        exitMinigameButton.SetActive(true);
+                        seedList.SetActive(true);
+                        GenerateSeedListFromInventory();
+                    }
                 }
 
                 defaultCamera.orthographicSize = Mathf.Lerp(defaultCamera.orthographicSize, 100f, Time.deltaTime * 4f);
@@ -264,11 +284,13 @@ public class RootMinigameManager : MonoBehaviour {
 
                         // Let go of mouse while dragging a seed into the planter, initiates the minigame with the seed type we want
                         if (Input.GetMouseButtonUp(0)) {
+                            UseSeedFromInventory(cursorGrabbed);
+
                             // Creates the root
                             GameObject newRoot = Instantiate(activeRootPrefab, new Vector2(spawnPointer.transform.position.x, 0f), Quaternion.Euler(new Vector3(0f, 0f, 270f)));
                             soundEffects.PlayOneShot(sound_rootbegin);
                             exitMinigameButton.SetActive(false);
-                            placeholderSeedList.SetActive(false);
+                            seedList.SetActive(false);
                             activeRoot = newRoot.GetComponent<ActiveRoot>();
                             activeRoot.colorIndex = cursorGrabbed;
                             activeRoot.stem.startColor = defaultRootColor;
@@ -343,7 +365,6 @@ public class RootMinigameManager : MonoBehaviour {
         // Load save and replace generation parameters if available
         string path = Application.persistentDataPath + "/roots"+currentSlot+".dat";
         if (File.Exists(path)) {
-            Debug.Log("File found, loading");
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(path, FileMode.Open);
             if (stream.Length != 0) {
@@ -540,5 +561,115 @@ public class RootMinigameManager : MonoBehaviour {
 
     public void CloseInstructionPrompt() {
         instructionPrompt.SetActive(false);
+    }
+
+    public void GenerateSeedListFromInventory() {
+        // Clear list except for the header and blank space below it
+        foreach (Transform t in seedList.transform) {
+            if (t.gameObject != seedList.transform.GetChild(0).gameObject && t.gameObject != seedList.transform.GetChild(1).gameObject)
+            GameObject.Destroy(t.gameObject);
+        }
+
+        // Loading inventory manually by file
+        // While ugly, it saves time short term because it's currently possible to initiate minigame without going to shop first
+        string path = Application.persistentDataPath + "/inventory.dat";
+        if (File.Exists(path)) {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            if (stream.Length != 0) {
+                // This loads in a binary file and reconstructs its integer arrays into List items
+                InventorySave data = (InventorySave)(formatter.Deserialize(stream));
+                int[] itemListType = data.itemListType;
+                int[] itemListStack = data.itemListStack;
+                int[] itemListColor = data.itemListColor;
+                int[] itemListIntensity = data.itemListIntensity;
+
+                for (int i = 0; i < itemListType.Length; i++) {
+                    if (itemListType[i] == 1 && itemListStack[i] > 0) {
+                        GameObject newSeedDrag = Instantiate(seedListItemPrefab, seedList.transform);
+                        newSeedDrag.GetComponent<PlaceholderSeedDrag>().SetColor(itemListColor[i]);
+                        newSeedDrag.GetComponent<PlaceholderSeedDrag>().stackSize = itemListStack[i];
+                        newSeedDrag.GetComponent<PlaceholderSeedDrag>().stackText.text = itemListStack[i] + " x ";
+                        newSeedDrag.GetComponent<PlaceholderSeedDrag>().seedName.text = colorToString(itemListColor[i]) + " Seed";
+                    }
+                }
+
+                Debug.Log("Inventory file loaded");
+            }
+
+            stream.Close();
+        }
+    }
+
+    public void UseSeedFromInventory(int indexUsed) {
+        // Loading inventory manually by file
+        // While ugly, it saves time short term because it's currently possible to initiate minigame without going to shop first
+        string path = Application.persistentDataPath + "/inventory.dat";
+        if (File.Exists(path)) {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            int[] itemListType = new int[0];
+            int[] itemListStack = new int[0];
+            int[] itemListColor = new int[0];
+            int[] itemListIntensity = new int[0];
+
+            if (stream.Length != 0) {
+                // This loads in a binary file and reconstructs its integer arrays into List items
+                InventorySave data = (InventorySave)(formatter.Deserialize(stream));
+                itemListType = data.itemListType;
+                itemListStack = data.itemListStack;
+                itemListColor = data.itemListColor;
+                itemListIntensity = data.itemListIntensity;
+
+                // Mark down the color seed we used from the stack
+                for (int i = 0; i < itemListType.Length; i++) {
+                    if (itemListType[i] == 1 && itemListColor[i] == indexUsed) {
+                        itemListStack[i]--;
+                        if (itemListStack[i] < 0) itemListStack[i] = 0;
+                    }
+                }
+
+                Debug.Log("Inventory file loaded");
+            }
+
+            stream.Close();
+
+            // Now write it back to the file
+            stream = new FileStream(path, FileMode.Create);
+            InventorySave regurgitate = new InventorySave(itemListType, itemListStack, itemListColor, itemListIntensity);
+            formatter.Serialize(stream, regurgitate);
+            stream.Close();
+        }
+    }
+
+    public string colorToString(int colorInt) {
+        switch (colorInt) {
+            case 0:
+                return "Red";
+            case 1:
+                return "Sunset";
+            case 2:
+                return "Orange";
+            case 3:
+                return "Amber";
+            case 4:
+                return "Yellow";
+            case 5:
+                return "Chartreuse";
+            case 6:
+                return "Green";
+            case 7:
+                return "Cyan";
+            case 8:
+                return "Blue";
+            case 9:
+                return "Iris";
+            case 10:
+                return "Violet";
+            case 11:
+                return "Fuchsia";
+            default:
+                return "Unknown Color";
+        }
     }
 }

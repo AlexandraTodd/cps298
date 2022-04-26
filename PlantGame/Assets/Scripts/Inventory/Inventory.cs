@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
@@ -17,34 +19,9 @@ public class Inventory : MonoBehaviour
         }
         instance = this;
         items = new List<Item>();
-        items = generateItemList();
-        currency = generateCurrency();
+        items = LoadInventoryItems();
     }
     #endregion
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.D))  // for testing, can be removed
-        {
-            Flower test = Flower.CreateInstance(4, 1);
-            Add(test);
-            Flower test2 = Flower.CreateInstance(8, 2);
-            Add(test2);
-            Seed test3 = Seed.CreateInstance(10);
-            Add(test3);
-            Seed test4 = Seed.CreateInstance(5);
-            Add(test4);
-            Flower test5 = Flower.CreateInstance(9, 0);
-            Add(test5);
-        }
-        if (Input.GetKeyDown(KeyCode.F))  // for testing, can be removed
-        {
-            Flower test = Flower.CreateInstance(4, 1);
-            Remove(test);
-            Seed test4 = Seed.CreateInstance(5);
-            Remove(test4);
-        }
-        }
 
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
@@ -102,7 +79,6 @@ public class Inventory : MonoBehaviour
         }
     }
 
-
     private List<Item> generateItemList()   // change to if fresh save generate, else load list
     {
         int itemCount = 0;
@@ -148,8 +124,102 @@ public class Inventory : MonoBehaviour
         currency -= currencyDec;
         Debug.Log("Currency total decremented to: " + currency);
     }
-    public int getCurrency()
-    {
-        return currency;
+    public int getCurrency() { return currency; }
+    private void setCurrency(int currencySet) { currency = currencySet; }
+
+    public void SaveInventoryItems() {
+        BinaryFormatter formatter = new BinaryFormatter();
+
+        // Inventory
+        string path = Application.persistentDataPath + "/inventory.dat";
+        FileStream stream = new FileStream(path, FileMode.Create);
+        InventorySave data = new InventorySave(items);
+        formatter.Serialize(stream, data);
+        stream.Close();
+
+        // Currency
+        path = Application.persistentDataPath + "/currency.dat";
+        stream = new FileStream(path, FileMode.Create);
+        CurrencySave currencySave = new CurrencySave(getCurrency());
+        formatter.Serialize(stream, currencySave);
+
+        // Done
+        stream.Close();
+    }
+
+    public List<Item> LoadInventoryItems() {
+        List<Item> reconstructedList = new List<Item>();
+
+        // Will use old method to generate list if necessary
+        bool generateNewList = true;
+
+        setCurrency(generateCurrency());
+        // Currency is accessed more frequently than inventory items, so currency will be going in a separate file
+        string currencyPath = Application.persistentDataPath + "/currency.dat";
+        if (File.Exists(currencyPath)) {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(currencyPath, FileMode.Open);
+            if (stream.Length != 0) {
+                CurrencySave data = (CurrencySave)(formatter.Deserialize(stream));
+                setCurrency(data.currency);
+            }
+            stream.Close();
+        }
+
+        // Load inventory items
+        string path = Application.persistentDataPath + "/inventory.dat";
+        if (File.Exists(path)) {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            if (stream.Length != 0) {
+                // This loads in a binary file and reconstructs its integer arrays into List items
+                InventorySave data = (InventorySave)(formatter.Deserialize(stream));
+                int[] itemListType = data.itemListType;
+                int[] itemListStack = data.itemListStack;
+                int[] itemListColor = data.itemListColor;
+                int[] itemListIntensity = data.itemListIntensity;
+
+                for (int i = 0; i < itemListType.Length; i++) {
+                    // This is only here to make the compiler shut up
+                    Item newItem = ScriptableObject.CreateInstance<Item>();
+
+                    // We have inventory items already, so no need to generate a list of every index
+                    generateNewList = false;
+
+                    // Some properties such as price are defined by the CreateInstance method of items rather than in an index, so we need to call a method based on type
+                    switch (itemListType[i]) {
+                        // 0 = flower
+                        case 0:
+                            newItem = Flower.CreateInstance(itemListColor[i], itemListIntensity[i]);
+                            break;
+
+                        // 1 = seed
+                        case 1:
+                            newItem = Seed.CreateInstance(itemListColor[i]);
+                            break;
+
+                        default:
+                            Debug.LogError("Unreadable item type " + itemListType[i] + " loaded");
+                            break;
+                    }
+
+                    newItem.stackSize = itemListStack[i];
+                    reconstructedList.Add(newItem);
+                }
+
+                Debug.Log("Inventory file loaded");
+            }
+
+            stream.Close();
+        }
+
+        // Calls old method to ensure everything has a stack available
+        if (generateNewList) {
+            reconstructedList = generateItemList();
+            Debug.Log("Inventory file was not found or did not load propertly, creating new blank list instead");
+        }
+
+        // Automatically returns an empty list if there's no save
+        return reconstructedList;
     }
 }

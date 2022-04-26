@@ -10,6 +10,7 @@ PlantGame/Assets/AssetStoreTools*
 PlantGame/MemoryCaptures/
 PlantGame/Recordings/
 PlantGame/.vs/
+PlantGame/Assembly-CSharp.csproj
 
 PlantGame/Assets/StreamingAssets/aa.meta
 PlantGame/Assets/StreamingAssets/aa/*

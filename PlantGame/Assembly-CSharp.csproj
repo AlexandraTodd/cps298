@@ -59,17 +59,22 @@
     <Compile Include="Assets\Scripts\Items\Seed.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\PlaceholderSeedDrag.cs" />
     <Compile Include="Assets\Scripts\ButtonInfo.cs" />
+    <Compile Include="Assets\Scripts\Shop\DropArea.cs" />
     <Compile Include="Assets\Scripts\World\WorldBorder.cs" />
     <Compile Include="Assets\Scripts\World\FlowerRow.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventoryUI.cs" />
     <Compile Include="Assets\Scripts\World\TilePlacement.cs" />
     <Compile Include="Assets\Scripts\Inventory\Inventory.cs" />
+    <Compile Include="Assets\Scripts\World\AppraisalPrompt.cs" />
+    <Compile Include="Assets\Scripts\Shop\DropCondition.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\Inventory\InventorySlotButtonRightClick.cs" />
     <Compile Include="Assets\Scripts\World\OverworldFlower.cs" />
     <Compile Include="Assets\FlowerScript.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\Nutrient.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\RootMinigameObstacle.cs" />
     <Compile Include="Assets\Scripts\MainMenuDummyRoot.cs" />
+    <Compile Include="Assets\Scripts\SaveSystem\CurrencySave.cs" />
     <Compile Include="Assets\Scripts\Inventory\InventorySlot.cs" />
     <Compile Include="Assets\camera.cs" />
     <Compile Include="Assets\PlayerMovement.cs" />
@@ -82,15 +87,22 @@
     <Compile Include="Assets\Scripts\World\SoundRandomizer.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\RootMinigameManager.cs" />
     <Compile Include="Assets\Scripts\World\OverworldManager.cs" />
-    <Compile Include="Assets\Scripts\RootMinigame\RootMinigameSave.cs" />
+    <Compile Include="Assets\Scripts\Shop\DragDrop.cs" />
+    <Compile Include="Assets\Scripts\World\ToucanShopkeeper.cs" />
+    <Compile Include="Assets\Scripts\SaveSystem\RootMinigameSave.cs" />
     <Compile Include="Assets\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\PlantedRoot.cs" />
+    <Compile Include="Assets\Scripts\Shop\Interactable.cs" />
     <Compile Include="Assets\Scripts\StringExtensions.cs" />
+    <Compile Include="Assets\Scripts\Shop\ShopSlot.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\RootPointer.cs" />
+    <Compile Include="Assets\Scripts\Shop\ShopScript.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\ActiveRoot.cs" />
     <Compile Include="Assets\Scripts\World\TileModifyTest.cs" />
+    <Compile Include="Assets\Scripts\SaveSystem\PersonalBestSave.cs" />
     <Compile Include="Assets\Scripts\RootMinigame\Aquifer.cs" />
-    <Compile Include="Assets\InventorySlotButtonRightClick.cs" />
+    <Compile Include="Assets\Scripts\SaveSystem\InventorySave.cs" />
+    <Compile Include="Assets\Scripts\World\ToucanAppraiser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

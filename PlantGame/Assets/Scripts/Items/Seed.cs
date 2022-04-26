@@ -9,7 +9,7 @@ public class Seed : Item
         data.name = data.colorToString(colorSet) + " Seed";
         data.color = colorSet;
         data.intensity = 2;
-        data.price = 1;
+        data.price = data.setSeedPrice(data.color);
         data.itemType = 1;
         data.stackSize = 1;
         return data;
@@ -21,7 +21,7 @@ public class Seed : Item
         data.name = data.colorToString(colorSet) + " Seed";
         data.color = colorSet;
         data.intensity = 2;
-        data.price = 1;
+        data.price = data.setSeedPrice(data.color);
         data.itemType = 1;
         data.stackSize = 0;
         return data;
@@ -32,5 +32,36 @@ public class Seed : Item
         // Mini Game
         // Add to Planter
         Debug.Log("Using " + name);
+    }
+
+    private int setSeedPrice(int seedColor)
+    {
+        switch (seedColor) {
+            // Primary colors are 1
+            case 0:
+            case 4:
+            case 8:
+                return 1;
+
+            // Secondary(?) colors are 3
+            case 2:
+            case 6:
+            case 10:
+                return 3;
+
+            // Tertiary(?) colors are 5
+            default:
+                return 5;
+        }
+
+        /*
+        int seedPrice = 1;
+        if(seedColor == 0 || seedColor % 2 == 0) { } // roygbp
+        else
+        {
+            seedPrice = 3;
+        }
+        return seedPrice;
+        */
     }
 }

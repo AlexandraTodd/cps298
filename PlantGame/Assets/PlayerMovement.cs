@@ -12,6 +12,11 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask collisionMask;
     private RaycastHit2D hit;
     private SoundRandomizer walkSounds;
+    public enum dir_state
+    {
+        up, right, down, left
+    }
+    public int facing;
 
     // Start is called before the first frame update
     void Start()
@@ -47,12 +52,36 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetFloat("Speed", 1);
             walkSounds.StartSound();
+
+            if (Mathf.Abs(direction.y) > Mathf.Abs(direction.x))
+            {
+                if (direction.y > 0) {
+                    facing = (int) dir_state.down;
+                }
+                else
+                {
+                    facing = (int) dir_state.up;
+                }
+            }
+            else
+            {
+                if (direction.x > 0)
+                {
+                    facing = (int) dir_state.right;
+                }
+                else
+                {
+                    facing = (int) dir_state.left;
+                }
+            }
+            animator.SetInteger("Facing", facing);
         }
         else
         {
             animator.SetFloat("Speed", 0);
             walkSounds.StopSound();
         }
+        
     }
 
     private void FixedUpdate()

@@ -12,43 +12,112 @@ public class OverworldManager : MonoBehaviour {
     [HideInInspector] public float fadeOutAnimation = 0f;
     [HideInInspector] public float fadeInAnimation = 0f;
     [HideInInspector] public bool controllingCamera = false;
+    [HideInInspector] public bool writeNewPersonalBest = true;
     string targetSceneName = "";
 
-    public AudioSource music;
-    public AudioLowPassFilter lowPassFilter;
     public Camera mainCamera;
     public Transform cinematicCameraTarget;
-
     public Image fadeOutOverlay;
+    public GameObject appraisalPrompt;
+    public AudioSource soundEffects;
+    public AudioClip sound_money;
+
+    public GameObject shopInstructions;
+    public GameObject goBuyInstructions;
+    public GameObject goPlantInstructions;
+    public GameObject goSellInstructions;
+    public GameObject appraisalInstructions;
+
+    [HideInInspector] public bool noMoney = false;
+    [HideInInspector] public bool noFlowersPlanted = true;
+    [HideInInspector] public bool noItemsInInventory = true;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         Instance = this;
         fadeOutOverlay.enabled = false;
-        lowPassFilter.cutoffFrequency = 22000f;
 
         // Dramatically fade in
         mainCamera.orthographicSize = 0.5f;
         fadeInAnimation = 1f;
 
+        CloseAppraisalPrompt();
+
+        if (PauseMenu.Instance != null) {
+            // Switch to overworld music if we're playing minigame music (this keeps music between overworld and shop despite being separate scenes)
+            if (!PauseMenu.MusicIsPlayingClip(PauseMenu.Instance.townmusic)) PauseMenu.SetMusic(PauseMenu.Instance.townmusic);
+
+            // Show instructions by circumstance
+            if (PauseMenu.Instance.showShopInstructions) {
+                shopInstructions.SetActive(true);
+                goBuyInstructions.SetActive(true);
+                appraisalInstructions.SetActive(false);
+                goSellInstructions.SetActive(false);
+                goPlantInstructions.SetActive(false);
+            } else {
+                shopInstructions.SetActive(false);
+                goBuyInstructions.SetActive(false);
+
+                goPlantInstructions.SetActive(PauseMenu.Instance.showMinigameInstructions);
+
+                appraisalInstructions.SetActive(PauseMenu.Instance.showAppraisalInstructions);
+                goSellInstructions.SetActive(PauseMenu.Instance.showAppraisalInstructions);
+            }
+        }
+
         // Annoyingly enough, these need to be updated every scene change
         PauseMenu.UpdateAudioPreference();
+
+        // Check if we have any items to sell or not
+        string path = Application.persistentDataPath + "/inventory.dat";
+        if (File.Exists(path)) {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            if (stream.Length != 0) {
+                // This loads in a binary file and reconstructs its integer arrays into List items
+                InventorySave data = (InventorySave)(formatter.Deserialize(stream));
+                int[] itemListType = data.itemListType;
+                int[] itemListStack = data.itemListStack;
+                int[] itemListColor = data.itemListColor;
+                int[] itemListIntensity = data.itemListIntensity;
+
+                for (int i = 0; i < itemListType.Length; i++) {
+                    if (itemListType[i] == 1 && itemListStack[i] > 0) {
+                        noItemsInInventory = false;
+                    }
+                }
+            }
+
+            stream.Close();
+        }
+
+        // Check if we have flowers or not
+        for (int i = 0; i < 10; i++) {
+            path = Application.persistentDataPath + "/roots" + i + ".dat";
+            if (File.Exists(path)) {
+                BinaryFormatter formatter = new BinaryFormatter();
+                FileStream stream = new FileStream(path, FileMode.Open);
+                if (stream.Length != 0) {
+                    RootMinigameSave data = (RootMinigameSave)(formatter.Deserialize(stream));
+                    int[] nutrientCount = data.nutrientCount;
+                    for (int p = 0; p < nutrientCount.Length; p++) {
+                        if (nutrientCount[p] > 0) noFlowersPlanted = false;
+                    }
+                }
+
+                stream.Close();
+            }
+        }
     }
 
     // Update is called once per frame
     void Update() {
         // Fade in from white at the start
         if (fadeInAnimation > 0f) {
-            // 1.551535 is the default set
-            mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, 1.551535f, Time.deltaTime * 4f);
+            mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, 1f, Time.deltaTime * 4f);
             fadeOutOverlay.enabled = true;
-
             fadeInAnimation = Mathf.Max(0f, fadeInAnimation - Time.deltaTime);
-
             fadeOutOverlay.color = new Color(1f, 1f, 1f, fadeInAnimation);
-
-            music.volume = 1f - fadeInAnimation;
 
             if (fadeInAnimation == 0f) {
                 fadeOutOverlay.enabled = false;
@@ -75,8 +144,8 @@ public class OverworldManager : MonoBehaviour {
 
             fadeOutOverlay.color = fadeOutOverlayColor;
 
-            // Music fades out
-            music.volume = Mathf.Min(1f, fadeOutAnimation);
+            // Music fades out if its for the minigame
+            if (targetSceneName == "RootMinigame") PauseMenu.SetMusicInGameVolume(Mathf.Min(1f, fadeOutAnimation));
 
             // Fades out 1 fadeOutAnimation per second, when reaching 0 it completes the switch to another scene
             fadeOutAnimation = Mathf.Max(0f, fadeOutAnimation - Time.deltaTime);
@@ -85,14 +154,16 @@ public class OverworldManager : MonoBehaviour {
             }
         } else {
             if (PauseMenu.Instance != null) {
-                lowPassFilter.cutoffFrequency = Mathf.Lerp(lowPassFilter.cutoffFrequency, (PauseMenu.Instance.menuCanvas.enabled ? 500f : 22000f), Time.deltaTime * 8f);
-                music.volume = Mathf.Lerp(music.volume, (PauseMenu.Instance.menuCanvas.enabled ? 0.1f : 1f), Time.deltaTime * 4f);
+                PauseMenu.Instance.lowPassFilter.cutoffFrequency = Mathf.Lerp(PauseMenu.Instance.lowPassFilter.cutoffFrequency, (PauseMenu.Instance.menuCanvas.enabled ? 500f : 22000f), Time.deltaTime * 8f);
+                PauseMenu.Instance.music.volume = Mathf.Lerp(PauseMenu.Instance.music.volume, (PauseMenu.Instance.menuCanvas.enabled ? 0.1f : 1f), Time.deltaTime * 4f);
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.Tab)) {
-            float[] scores = GardenAppraisalValues();
-            Debug.Log("Variance: " + scores[0] + " / 5.00, Volume: " + scores[1] + " / 5.00, Vibrance: " + scores[2] + " / 5.00, Spread: " + scores[3] + " / 5.00");
+    }
+    
+    // LateUpdate calls every frame after Update. Wanted a frame of leeway in case of false game overs being triggered but might not be necessary
+    void LateUpdate() {
+        if(noMoney && noFlowersPlanted && noItemsInInventory) {
+            if (PauseMenu.Instance != null && PauseMenu.Instance.gameOverTimer == 0f) PauseMenu.Instance.gameOverTimer = 5f;
         }
     }
 
@@ -106,8 +177,8 @@ public class OverworldManager : MonoBehaviour {
         // Things to keep track of as we cycle through each flower row
         float scoreVariance, scoreVolume, scoreVibrance, scoreSpread;
         bool[,] colorVariantsUsed = new bool[12,3];
-        int numberOfFlowersPlanted = 0;
-        int totalNutrientCount = 0;
+        float numberOfFlowersPlanted = 0f;
+        float totalNutrientCount = 0f;
         float[] distanceBetweenFlowers = new float[10];
 
         // Load in each flower row
@@ -165,11 +236,11 @@ public class OverworldManager : MonoBehaviour {
                         distanceBetweenFlowersThisRowTally += distancesBetweenFlowersThisRow[i];
                     }
 
-                    distanceBetweenFlowers[flowerRow] = distanceBetweenFlowersThisRowTally / firstXPositionsOfFlowers.Count;
+                    distanceBetweenFlowers[flowerRow] = distanceBetweenFlowersThisRowTally / Mathf.Max(1f, firstXPositionsOfFlowers.Count);
                 }
 
                 stream.Close();
-            }
+            } 
         }
 
         // Tallying number of combinations used for Variance
@@ -189,18 +260,103 @@ public class OverworldManager : MonoBehaviour {
         //       (i.e. tier 3 is worth 5 instead of 3)
         scoreVariance = numberOfColorIntensityCombinationsUsed / 36f;   // Target: All 36 color combinations
         scoreVolume = (numberOfFlowersPlanted / 10f) / 5f;              // Target: 5 flowers per row
-        scoreVibrance = (totalNutrientCount / numberOfFlowersPlanted) / 3f; // Target: 3:1 nutrient:flower ratio
+        scoreVibrance = (totalNutrientCount / Mathf.Max(1f, numberOfFlowersPlanted)) / 3f; // Target: 3:1 nutrient:flower ratio
         scoreSpread = (sumOfAverages / 10f) / 20f;                      // Target: 20 units of distance
 
-        // Truncate each being out of 5 stars with 2 decimal points (kept separate for readability and ease of changing formulas if needed)
-        /*
-        scoreVariance = Mathf.Clamp(Mathf.Round(scoreVariance * 500f) / 100f, 0f, 5f);
-        scoreVolume = Mathf.Clamp(Mathf.Round(scoreVolume * 500f) / 100f, 0f, 5f);
-        scoreVibrance = Mathf.Clamp(Mathf.Round(scoreVibrance * 500f) / 100f, 0f, 5f);
-        scoreSpread = Mathf.Clamp(Mathf.Round(scoreSpread * 500f) / 100f, 0f, 5f);
-        */
+        float finalScore = (scoreVariance + scoreVolume + scoreVibrance + scoreSpread) / 4f;
+        finalScore = Mathf.Round(finalScore * 500f) / 100f;
 
         // Returns array of results
-        return new float[] { scoreVariance, scoreVolume, scoreVibrance, scoreSpread };
+        return new float[] { scoreVariance, scoreVolume, scoreVibrance, scoreSpread, finalScore };
+    }
+
+    public void OpenAppraisalPrompt() {
+        appraisalPrompt.SetActive(true);
+
+        float[] appraisalValues = GardenAppraisalValues();
+
+        // Figure out if this is a PB
+        bool pbExists = false;
+        string path = Application.persistentDataPath + "/personalbest.dat";
+        float incomingScore = appraisalValues[4];
+        float previousBestScore = 0f;
+        if (File.Exists(path)) {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            if (stream.Length != 0) {
+                pbExists = true;
+                PersonalBestSave pb = (PersonalBestSave)(formatter.Deserialize(stream));
+                previousBestScore = pb.previousBest;
+                writeNewPersonalBest = incomingScore > previousBestScore;
+            }
+
+            stream.Close();
+        } else writeNewPersonalBest = true;
+
+        // Update values
+        appraisalPrompt.GetComponent<AppraisalPrompt>().UpdateValues(appraisalValues, pbExists, writeNewPersonalBest, previousBestScore);
+    }
+
+    public void CloseAppraisalPrompt() {
+        appraisalPrompt.SetActive(false);
+    }
+
+    public void AppraisalHarvestAndSell() {
+        float incomingScore = GardenAppraisalValues()[4];
+
+        // Handling currency
+        if (incomingScore > 0f) {
+            // Check if we already have a currency value saved to increment
+            // If not, it will use the default 25
+            int outputCurrency = 25;
+            string path = Application.persistentDataPath + "/currency.dat";
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream;
+            if (File.Exists(path)) {
+                stream = new FileStream(path, FileMode.Open);
+                if (stream.Length != 0) {
+                    CurrencySave data = (CurrencySave)(formatter.Deserialize(stream));
+                    outputCurrency = data.currency;
+                }
+
+                stream.Close();
+            }
+
+            // Increment new currency
+            outputCurrency += Mathf.RoundToInt(incomingScore * 10f);
+
+            // Save new currency value
+            stream = new FileStream(path, FileMode.Create);
+            CurrencySave newPB = new CurrencySave(outputCurrency);
+            formatter.Serialize(stream, newPB);
+            stream.Close();
+
+            // Ka-ching
+            soundEffects.PlayOneShot(sound_money);
+            if (PauseMenu.Instance != null) PauseMenu.Instance.showAppraisalInstructions = false;
+        }
+
+        // Writes a new personal best if necessary. Made a separate file so it works between different playthroughs
+        if (writeNewPersonalBest) {
+            string path = Application.persistentDataPath + "/personalbest.dat";
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Create);
+            PersonalBestSave newPB = new PersonalBestSave(incomingScore);
+            formatter.Serialize(stream, newPB);
+            stream.Close();
+        }
+
+        // Destroy all flower row files if they exist so we can create new plots
+        for (int i = 0; i < 10; i++) {
+            string path = Application.persistentDataPath + "/roots" + i + ".dat";
+            if (File.Exists(path)) {
+                File.Delete(path);
+            }
+        }
+
+        // Reset scene
+        CloseAppraisalPrompt();
+        cinematicCameraTarget = mainCamera.transform;
+        TransitionToScene("TownMap");
     }
 }
