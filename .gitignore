@@ -1,16 +1,16 @@
-PlantGame/Library/
-PlantGame/Logs/
-PlantGame/Obj/
-PlantGame/Packages/
-PlantGame/Temp/
-PlantGame/UnityGenerated/
-PlantGame/UserSettings/
+"Source Code/Library/"
+"Source Code/Logs/"
+"Source Code/Obj/"
+"Source Code/Packages/"
+"Source Code/Temp/"
+"Source Code/UnityGenerated/"
+"Source Code/UserSettings/"
 
-PlantGame/Assets/AssetStoreTools*
-PlantGame/MemoryCaptures/
-PlantGame/Recordings/
-PlantGame/.vs/
-PlantGame/Assembly-CSharp.csproj
+"Source Code/Assets/AssetStoreTools*"
+"Source Code/MemoryCaptures/"
+"Source Code/Recordings/"
+"Source Code/.vs/"
+"Source Code/Assembly-CSharp.csproj"
 
-PlantGame/Assets/StreamingAssets/aa.meta
-PlantGame/Assets/StreamingAssets/aa/*
+"Source CodeAssets/StreamingAssets/aa.meta"
+"Source Code/Assets/StreamingAssets/aa/*"
