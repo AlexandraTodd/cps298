@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class InventorySlot : MonoBehaviour {
     public Image Icon;
     public Item item;
-    public int stackSize;
     public Text stackSizeText;
     public Text itemNameText;
     public Text priceText;
@@ -17,7 +16,6 @@ public class InventorySlot : MonoBehaviour {
         Icon.material = clonedMaterial;
         Icon.material.SetInt("inputColor", item.color);
         Icon.material.SetInt("inputIntensity", item.intensity);
-        stackSize = content.stackSize;
         stackSizeText.text = content.stackSize.ToString();
         itemNameText.text = content.name;
         priceText.text = "$" + content.price.ToString();
