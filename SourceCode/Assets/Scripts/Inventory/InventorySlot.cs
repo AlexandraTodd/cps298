@@ -5,9 +5,7 @@ public class InventorySlot : MonoBehaviour {
     public Image Icon;
     public Item item;
     public int stackSize;
-    private string stackSizeString;
     public Text stackSizeText;
-    private string itemNameString;
     public Text itemNameText;
     public Text priceText;
 
