@@ -42,8 +42,8 @@ public class AppraisalPrompt : MonoBehaviour {
                     break;
             }
 
-            // Money is simply stars times 10, rounded to nearest dollar
-            moneyValue.text = "$"+Mathf.Round(incomingValues[4] * 10f);
+            // Money is simply stars times 20, rounded to nearest dollar
+            moneyValue.text = "$"+Mathf.Round(incomingValues[4] * 20f);
 
             // Disables harvest/sell button if it wouldn't do anything
             harvestSellButton.interactable = incomingValues[4] > 0f;

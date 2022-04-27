@@ -323,7 +323,7 @@ public class OverworldManager : MonoBehaviour {
             }
 
             // Increment new currency
-            outputCurrency += Mathf.RoundToInt(incomingScore * 10f);
+            outputCurrency += Mathf.RoundToInt(incomingScore * 20f);
 
             // Save new currency value
             stream = new FileStream(path, FileMode.Create);
